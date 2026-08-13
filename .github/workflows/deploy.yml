@@ -18,7 +18,7 @@ jobs:
     - name: Setup PHP Environment
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.3' # Matches composer.json requirement (^8.3)
+        php-version: '8.4' # Locked packages require PHP >= 8.4.1
         extensions: mbstring, xml, ctype, iconv, mysql, zip
 
     - name: Install Composer Dependencies

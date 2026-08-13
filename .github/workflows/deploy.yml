@@ -12,8 +12,6 @@ jobs:
     steps:
     - name: Get Latest Code
       uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
 
     - name: Setup PHP Environment
       uses: shivammathur/setup-php@v2
@@ -25,6 +23,17 @@ jobs:
       run: |
         composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: npm
+
+    - name: Build Frontend Assets
+      run: |
+        npm ci
+        npm run build
+
     - name: Sync Production Files to Server
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
@@ -33,3 +42,29 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         local-dir: ./
         server-dir: ./
+        timeout: 600000
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/.github/**
+          **/node_modules/**
+          **/tests/**
+          **/phpunit.xml
+          **/.env
+          **/.env.*
+          !**/.env.example
+          **/.editorconfig
+          **/.styleci.yml
+          **/README.md
+          **/CHANGELOG.md
+          **/*.md
+          **/package.json
+          **/package-lock.json
+          **/vite.config.*
+          **/tailwind.config.*
+          **/postcss.config.*
+          **/storage/logs/**
+          **/storage/framework/cache/**
+          **/storage/framework/sessions/**
+          **/storage/framework/views/**
+          **/storage/pail/**

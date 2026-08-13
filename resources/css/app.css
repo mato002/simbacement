@@ -1,0 +1,74 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Source Sans 3', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Barlow Condensed', ui-sans-serif, system-ui, sans-serif;
+
+    --color-ink: #121212;
+    --color-ink-soft: #2c2c2c;
+    --color-steel: #5c5c5c;
+    --color-concrete: #e7e5e1;
+    --color-mist: #f3f2ef;
+    --color-brand: #e6b422;
+    --color-brand-dark: #c4920a;
+    --color-brand-deep: #8a6800;
+    --color-surface: #ffffff;
+    --color-line: #d4d1cb;
+}
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply bg-mist font-sans text-ink antialiased;
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+
+    ::selection {
+        background: color-mix(in oklab, var(--color-brand) 35%, white);
+    }
+}
+
+@layer components {
+    .container-page {
+        @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+    }
+
+    .btn-primary {
+        @apply inline-flex items-center justify-center gap-2 rounded-sm bg-brand px-5 py-3 text-sm font-semibold tracking-wide text-ink uppercase transition duration-200 hover:bg-brand-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand;
+    }
+
+    .btn-secondary {
+        @apply inline-flex items-center justify-center gap-2 rounded-sm border border-white/70 bg-transparent px-5 py-3 text-sm font-semibold tracking-wide text-white uppercase transition duration-200 hover:bg-white hover:text-ink;
+    }
+
+    .btn-dark {
+        @apply inline-flex items-center justify-center gap-2 rounded-sm bg-ink px-5 py-3 text-sm font-semibold tracking-wide text-white uppercase transition duration-200 hover:bg-ink-soft;
+    }
+
+    .section-label {
+        @apply text-xs font-semibold tracking-[0.2em] text-brand-deep uppercase;
+    }
+
+    .heading-display {
+        @apply font-display text-4xl leading-none font-bold tracking-tight uppercase sm:text-5xl lg:text-6xl;
+    }
+
+    .nav-link {
+        @apply text-sm font-semibold tracking-wide text-ink/80 transition hover:text-ink;
+    }
+
+    .nav-link-active {
+        @apply text-ink;
+    }
+}

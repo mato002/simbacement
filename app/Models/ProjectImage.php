@@ -1,0 +1,26 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class ProjectImage extends Model
+{
+    protected $fillable = [
+        'project_id',
+        'media_id',
+        'caption',
+        'sort_order',
+    ];
+
+    public function project(): BelongsTo
+    {
+        return $this->belongsTo(Project::class);
+    }
+
+    public function media(): BelongsTo
+    {
+        return $this->belongsTo(MediaAsset::class, 'media_id');
+    }
+}

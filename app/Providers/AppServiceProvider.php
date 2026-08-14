@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Setting;
+use App\Support\DatabaseBootstrapper;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -22,6 +23,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        DatabaseBootstrapper::ensureReady();
+
         Gate::before(function ($user, string $ability) {
             return $user->hasRole('super-admin') ? true : null;
         });

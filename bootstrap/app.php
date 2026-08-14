@@ -18,6 +18,10 @@ return Application::configure(basePath: dirname(__DIR__))
         then: function () {
             Route::middleware('web')
                 ->group(base_path('routes/admin.php'));
+
+            // No session middleware: this must work before the sessions table exists.
+            Route::middleware('throttle:5,1')
+                ->group(base_path('routes/setup.php'));
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {

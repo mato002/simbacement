@@ -77,16 +77,20 @@
                         <input type="number" name="sort_order" min="0" value="{{ old('sort_order', $project->sort_order) }}" class="w-full border border-line bg-mist px-3 py-2.5 text-sm">
                     </div>
                 </div>
-                <div class="border border-line bg-white p-6">
-                    <h2 class="font-display text-2xl font-bold uppercase tracking-wide">Featured image</h2>
-                    @if ($project->featuredImage)
-                        <img src="{{ $project->featuredImage->url() }}" alt="{{ $project->title }}" class="mt-4 aspect-video w-full object-cover bg-mist">
-                    @endif
-                    <input type="file" name="featured_image" accept="image/*" class="mt-4 w-full border border-line bg-mist px-3 py-2 text-sm">
-                </div>
-                <div class="border border-line bg-white p-6">
-                    <h2 class="font-display text-2xl font-bold uppercase tracking-wide">Gallery</h2>
-                    <p class="mt-2 text-xs text-steel">Extra project photos for the public gallery.</p>
+                <x-admin.image-field
+                    name="featured_image"
+                    label="Featured image"
+                    class="border border-line bg-white p-6"
+                    :existing-url="$project->featuredImage?->url()"
+                    :existing-alt="$project->title"
+                />
+                <x-admin.image-field
+                    name="gallery_images[]"
+                    label="Gallery"
+                    hint="Extra project photos for the public gallery."
+                    class="border border-line bg-white p-6"
+                    :multiple="true"
+                >
                     @if ($project->exists && $project->images->isNotEmpty())
                         <div class="mt-4 grid grid-cols-2 gap-3">
                             @foreach ($project->images as $image)
@@ -102,8 +106,7 @@
                             @endforeach
                         </div>
                     @endif
-                    <input type="file" name="gallery_images[]" accept="image/*" multiple class="mt-4 w-full border border-line bg-mist px-3 py-2 text-sm">
-                </div>
+                </x-admin.image-field>
                 <div class="border border-line bg-white p-6">
                     <h2 class="font-display text-2xl font-bold uppercase tracking-wide">Products used</h2>
                     <div class="mt-4 max-h-72 space-y-2 overflow-y-auto">

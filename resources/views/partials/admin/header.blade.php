@@ -20,6 +20,7 @@
     x-data="{
         notificationsOpen: false,
         userMenuOpen: false,
+        createOpen: false,
         searchOpen: false,
         searchQuery: '',
         searchLoading: false,
@@ -30,6 +31,7 @@
         closeMenus() {
             this.notificationsOpen = false;
             this.userMenuOpen = false;
+            this.createOpen = false;
             this.searchOpen = false;
             this.searchIndex = -1;
         },
@@ -43,7 +45,7 @@
             });
             return groups;
         },
-                flatResults() {
+        flatResults() {
             return this.searchResults;
         },
         resultKey(item) {
@@ -223,8 +225,66 @@
             <div class="relative">
                 <button
                     type="button"
+                    class="admin-header-btn !bg-brand !border-brand text-ink hover:!bg-brand-dark"
+                    @click="createOpen = !createOpen; notificationsOpen = false; userMenuOpen = false; searchOpen = false"
+                    :aria-expanded="createOpen.toString()"
+                    aria-label="Quick create"
+                >
+                    <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                    <span class="hidden sm:inline">Quick create</span>
+                    <i class="fa-solid fa-chevron-down text-[10px]" aria-hidden="true"></i>
+                </button>
+
+                <div
+                    x-cloak
+                    x-show="createOpen"
+                    x-transition.origin.top.right
+                    @click.outside="createOpen = false"
+                    class="admin-header-menu right-0 w-64"
+                >
+                    <p class="admin-header-menu-label">Quick create</p>
+                    <a href="{{ route('admin.products.create') }}" class="admin-header-menu-item" @click="createOpen = false">
+                        <i class="fa-solid fa-box-open w-4 text-center text-brand-deep" aria-hidden="true"></i>
+                        New product
+                    </a>
+                    <a href="{{ route('admin.news.create') }}" class="admin-header-menu-item" @click="createOpen = false">
+                        <i class="fa-solid fa-newspaper w-4 text-center text-brand-deep" aria-hidden="true"></i>
+                        New article
+                    </a>
+                    <a href="{{ route('admin.jobs.create') }}" class="admin-header-menu-item" @click="createOpen = false">
+                        <i class="fa-solid fa-briefcase w-4 text-center text-brand-deep" aria-hidden="true"></i>
+                        New job listing
+                    </a>
+                    <a href="{{ route('admin.projects.create') }}" class="admin-header-menu-item" @click="createOpen = false">
+                        <i class="fa-solid fa-building w-4 text-center text-brand-deep" aria-hidden="true"></i>
+                        New project
+                    </a>
+                    <div class="border-t border-line py-1">
+                        <a href="{{ route('admin.solutions.create') }}" class="admin-header-menu-item" @click="createOpen = false">
+                            <i class="fa-solid fa-diagram-project w-4 text-center text-steel" aria-hidden="true"></i>
+                            New solution
+                        </a>
+                        <a href="{{ route('admin.pages.create') }}" class="admin-header-menu-item" @click="createOpen = false">
+                            <i class="fa-solid fa-file-lines w-4 text-center text-steel" aria-hidden="true"></i>
+                            New page
+                        </a>
+                        <a href="{{ route('admin.categories.create') }}" class="admin-header-menu-item" @click="createOpen = false">
+                            <i class="fa-solid fa-tags w-4 text-center text-steel" aria-hidden="true"></i>
+                            New category
+                        </a>
+                        <a href="{{ route('admin.locations.create') }}" class="admin-header-menu-item" @click="createOpen = false">
+                            <i class="fa-solid fa-location-dot w-4 text-center text-steel" aria-hidden="true"></i>
+                            New location
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative">
+                <button
+                    type="button"
                     class="admin-header-icon-btn"
-                    @click="notificationsOpen = !notificationsOpen; userMenuOpen = false; searchOpen = false"
+                    @click="notificationsOpen = !notificationsOpen; userMenuOpen = false; createOpen = false; searchOpen = false"
                     :aria-expanded="notificationsOpen.toString()"
                     aria-label="Notifications"
                 >
@@ -290,7 +350,7 @@
                 <button
                     type="button"
                     class="flex items-center gap-2.5 border border-line bg-white py-1 pl-1 pr-2.5 transition hover:border-brand hover:bg-mist"
-                    @click="userMenuOpen = !userMenuOpen; notificationsOpen = false; searchOpen = false"
+                    @click="userMenuOpen = !userMenuOpen; notificationsOpen = false; createOpen = false; searchOpen = false"
                     :aria-expanded="userMenuOpen.toString()"
                     aria-label="Open profile menu"
                 >
@@ -324,25 +384,7 @@
                         </div>
                     </div>
 
-                    <p class="admin-header-menu-label">Quick create</p>
-                    <a href="{{ route('admin.products.create') }}" class="admin-header-menu-item" @click="userMenuOpen = false">
-                        <i class="fa-solid fa-box-open w-4 text-center text-brand-deep" aria-hidden="true"></i>
-                        New product
-                    </a>
-                    <a href="{{ route('admin.news.create') }}" class="admin-header-menu-item" @click="userMenuOpen = false">
-                        <i class="fa-solid fa-newspaper w-4 text-center text-brand-deep" aria-hidden="true"></i>
-                        New article
-                    </a>
-                    <a href="{{ route('admin.jobs.create') }}" class="admin-header-menu-item" @click="userMenuOpen = false">
-                        <i class="fa-solid fa-briefcase w-4 text-center text-brand-deep" aria-hidden="true"></i>
-                        New job listing
-                    </a>
-                    <a href="{{ route('admin.projects.create') }}" class="admin-header-menu-item" @click="userMenuOpen = false">
-                        <i class="fa-solid fa-building w-4 text-center text-brand-deep" aria-hidden="true"></i>
-                        New project
-                    </a>
-
-                    <div class="border-t border-line py-1">
+                    <div class="py-1">
                         <a href="{{ route('home') }}" target="_blank" rel="noopener" class="admin-header-menu-item" @click="userMenuOpen = false">
                             <i class="fa-solid fa-globe w-4 text-center text-steel" aria-hidden="true"></i>
                             View website

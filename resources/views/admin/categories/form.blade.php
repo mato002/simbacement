@@ -51,11 +51,14 @@
 
         <div>
             <label class="mb-1.5 block text-sm font-semibold">Category image</label>
-            @if ($category->image)
-                <img src="{{ $category->image->url() }}" alt="{{ $category->name }}" class="mb-3 aspect-video w-full max-w-md object-cover bg-mist">
-            @endif
-            <input type="file" name="image" accept="image/*" class="w-full border border-line bg-mist px-3 py-2 text-sm">
-            <p class="mt-1 text-xs text-steel">Upload to replace the image shown on the website catalogue.</p>
+            <x-admin.image-field
+                name="image"
+                class="max-w-md"
+                :existing-url="$category->image?->url()"
+                :existing-alt="$category->name"
+                hint="Upload to replace the image shown on the website catalogue."
+                input-class="mt-3 w-full border border-line bg-mist px-3 py-2 text-sm"
+            />
             @error('image') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
         </div>
 

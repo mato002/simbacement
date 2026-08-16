@@ -48,11 +48,13 @@
                 </div>
                 <div>
                     <label class="mb-1.5 block text-sm font-semibold">Hero image</label>
-                    @if ($page->heroImageUrl())
-                        <img src="{{ $page->heroImageUrl() }}" alt="{{ $page->title }}" class="mb-3 aspect-video w-full object-cover bg-mist">
-                    @endif
-                    <input type="file" name="hero_image" accept="image/*" class="w-full border border-line bg-mist px-3 py-2 text-sm">
-                    <p class="mt-2 text-xs text-steel">Upload a new hero, or keep using an external URL below.</p>
+                    <x-admin.image-field
+                        name="hero_image"
+                        :existing-url="$page->heroImageUrl()"
+                        :existing-alt="$page->title"
+                        hint="Upload a new hero, or keep using an external URL below."
+                        input-class="mt-3 w-full border border-line bg-mist px-3 py-2 text-sm"
+                    />
                     @error('hero_image') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
                 <div>

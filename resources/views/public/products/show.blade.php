@@ -26,14 +26,31 @@
             </nav>
 
             <div class="grid gap-10 lg:grid-cols-2">
-                <div class="overflow-hidden border border-line bg-concrete">
-                    <img
-                        src="{{ $product->imageUrl() }}"
-                        alt="{{ $product->imageAlt() }}"
-                        class="aspect-[4/3] h-full w-full object-cover"
-                        width="1200"
-                        height="900"
-                    >
+                <div>
+                    <div class="overflow-hidden border border-line bg-concrete">
+                        <img
+                            src="{{ $product->imageUrl() }}"
+                            alt="{{ $product->imageAlt() }}"
+                            class="aspect-[4/3] h-full w-full object-cover"
+                            width="1200"
+                            height="900"
+                        >
+                    </div>
+                    @php $gallery = $product->images->where('is_primary', false)->filter(fn ($image) => $image->media); @endphp
+                    @if ($gallery->isNotEmpty())
+                        <div class="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4">
+                            @foreach ($gallery as $image)
+                                <div class="overflow-hidden border border-line bg-concrete">
+                                    <img
+                                        src="{{ $image->media->url() }}"
+                                        alt="{{ $image->media->alt ?: $product->name }}"
+                                        class="aspect-square w-full object-cover"
+                                        loading="lazy"
+                                    >
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
 
                 <div>

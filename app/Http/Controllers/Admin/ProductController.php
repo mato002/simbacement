@@ -19,7 +19,8 @@ class ProductController extends Controller
     public function index(Request $request): View
     {
         $products = Product::query()
-            ->with('category')
+            ->with(['category', 'images.media'])
+            ->withCount('images')
             ->when($request->string('category')->toString(), fn ($q, $slug) => $q->whereHas(
                 'category',
                 fn ($category) => $category->where('slug', $slug)
@@ -104,6 +105,7 @@ class ProductController extends Controller
             $this->syncPrimaryImage($product, $request, $mediaLibrary);
             $this->syncGalleryImages($product, $request, $mediaLibrary);
             $this->removeGalleryImages($product, $request, $mediaLibrary);
+            $this->removePrimaryImage($product, $request, $mediaLibrary);
         });
 
         return redirect()
@@ -144,6 +146,7 @@ class ProductController extends Controller
             'meta_description' => ['nullable', 'string', 'max:300'],
             'meta_keywords' => ['nullable', 'string', 'max:255'],
             'primary_image' => ['nullable', 'image', 'max:5120'],
+            'remove_primary_image' => ['sometimes', 'boolean'],
             'gallery_images' => ['nullable', 'array'],
             'gallery_images.*' => ['image', 'max:5120'],
             'remove_images' => ['nullable', 'array'],
@@ -162,7 +165,7 @@ class ProductController extends Controller
             ? ($product?->published_at ?? now())
             : null;
 
-        unset($data['primary_image'], $data['gallery_images'], $data['remove_images'], $data['specs']);
+        unset($data['primary_image'], $data['remove_primary_image'], $data['gallery_images'], $data['remove_images'], $data['specs']);
 
         return $data;
     }
@@ -204,16 +207,65 @@ class ProductController extends Controller
             $product->name
         );
 
-        $product->images()->update(['is_primary' => false]);
+        $existingPrimary = $product->images()->where('is_primary', true)->with('media')->first();
 
-        ProductImage::query()->create([
-            'product_id' => $product->id,
-            'media_id' => $media->id,
-            'is_primary' => true,
-            'sort_order' => 0,
-        ]);
+        if ($existingPrimary) {
+            $oldMedia = $existingPrimary->media;
+            $existingPrimary->update(['media_id' => $media->id]);
+
+            if ($oldMedia && $oldMedia->id !== $media->id) {
+                $stillUsed = ProductImage::query()->where('media_id', $oldMedia->id)->exists()
+                    || Product::query()->where('og_image_id', $oldMedia->id)->where('id', '!=', $product->id)->exists();
+
+                if (! $stillUsed) {
+                    $mediaLibrary->delete($oldMedia);
+                }
+            }
+        } else {
+            ProductImage::query()->create([
+                'product_id' => $product->id,
+                'media_id' => $media->id,
+                'is_primary' => true,
+                'sort_order' => 0,
+            ]);
+        }
 
         $product->update(['og_image_id' => $media->id]);
+    }
+
+    private function removePrimaryImage(Product $product, Request $request, MediaLibraryService $mediaLibrary): void
+    {
+        if (! $request->boolean('remove_primary_image') || $request->hasFile('primary_image')) {
+            return;
+        }
+
+        $primary = $product->images()->where('is_primary', true)->with('media')->first();
+
+        if (! $primary) {
+            return;
+        }
+
+        $oldMedia = $primary->media;
+        $primary->delete();
+
+        if ($product->og_image_id && $oldMedia && $product->og_image_id === $oldMedia->id) {
+            $product->update(['og_image_id' => null]);
+        }
+
+        if ($oldMedia) {
+            $stillUsed = ProductImage::query()->where('media_id', $oldMedia->id)->exists()
+                || Product::query()->where('og_image_id', $oldMedia->id)->exists();
+
+            if (! $stillUsed) {
+                $mediaLibrary->delete($oldMedia);
+            }
+        }
+
+        $fallback = $product->images()->with('media')->orderBy('sort_order')->first();
+        if ($fallback) {
+            $fallback->update(['is_primary' => true]);
+            $product->update(['og_image_id' => $fallback->media_id]);
+        }
     }
 
     private function syncGalleryImages(Product $product, Request $request, MediaLibraryService $mediaLibrary): void
@@ -225,6 +277,10 @@ class ProductController extends Controller
         $sort = (int) $product->images()->max('sort_order');
 
         foreach ($request->file('gallery_images', []) as $file) {
+            if (! $file) {
+                continue;
+            }
+
             $media = $mediaLibrary->store($file, $request->user(), 'products', $product->name);
 
             ProductImage::query()->create([
@@ -251,11 +307,17 @@ class ProductController extends Controller
                 continue;
             }
 
-            if ($image->media) {
-                $mediaLibrary->delete($image->media);
-            }
-
+            $oldMedia = $image->media;
             $image->delete();
+
+            if ($oldMedia) {
+                $stillUsed = ProductImage::query()->where('media_id', $oldMedia->id)->exists()
+                    || Product::query()->where('og_image_id', $oldMedia->id)->exists();
+
+                if (! $stillUsed) {
+                    $mediaLibrary->delete($oldMedia);
+                }
+            }
         }
     }
 }

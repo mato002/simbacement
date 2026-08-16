@@ -7,6 +7,7 @@
         <div>
             <p class="section-label mb-2">Catalogue</p>
             <h1 class="font-display text-4xl font-bold uppercase tracking-wide">Products</h1>
+            <p class="mt-2 text-sm text-steel">Edit any product to add, replace or remove its primary and gallery images.</p>
         </div>
         <a href="{{ route('admin.products.create') }}" class="btn-primary">Add product</a>
     </div>
@@ -28,27 +29,52 @@
                 <tr>
                     <th class="px-4 py-3">Product</th>
                     <th class="px-4 py-3">Category</th>
-                    <th class="px-4 py-3">SKU</th>
+                    <th class="px-4 py-3">Images</th>
                     <th class="px-4 py-3">Status</th>
                     <th class="px-4 py-3"></th>
                 </tr>
             </thead>
             <tbody>
                 @forelse ($products as $product)
+                    @php
+                        $primary = $product->primaryImage();
+                        $hasImage = (bool) $primary?->media;
+                    @endphp
                     <tr class="border-b border-line/70">
                         <td class="px-4 py-3">
-                            <p class="font-semibold">{{ $product->name }}</p>
-                            @if ($product->is_featured)
-                                <p class="text-xs text-brand-deep">Featured</p>
-                            @endif
+                            <div class="flex items-center gap-3">
+                                <div class="h-12 w-12 shrink-0 overflow-hidden border border-line bg-mist">
+                                    @if ($hasImage)
+                                        <img src="{{ $primary->media->url() }}" alt="" class="h-full w-full object-cover">
+                                    @else
+                                        <div class="flex h-full w-full items-center justify-center text-[10px] font-semibold uppercase tracking-wide text-steel">No img</div>
+                                    @endif
+                                </div>
+                                <div>
+                                    <p class="font-semibold">{{ $product->name }}</p>
+                                    <p class="text-xs text-steel">{{ $product->sku ?: 'No SKU' }}</p>
+                                    @if ($product->is_featured)
+                                        <p class="text-xs text-brand-deep">Featured</p>
+                                    @endif
+                                </div>
+                            </div>
                         </td>
                         <td class="px-4 py-3 text-steel">{{ $product->category?->name }}</td>
-                        <td class="px-4 py-3">{{ $product->sku ?: '—' }}</td>
+                        <td class="px-4 py-3">
+                            @if ($hasImage)
+                                <span class="admin-badge admin-badge-success">{{ $product->images_count }} image{{ $product->images_count === 1 ? '' : 's' }}</span>
+                            @else
+                                <span class="admin-badge admin-badge-muted">Needs image</span>
+                            @endif
+                        </td>
                         <td class="px-4 py-3">
                             {{ $product->is_active && $product->published_at ? 'Published' : ($product->is_active ? 'Draft' : 'Inactive') }}
                         </td>
                         <td class="px-4 py-3 text-right">
-                            <div class="flex items-center justify-end gap-3">
+                            <div class="flex flex-wrap items-center justify-end gap-3">
+                                <a href="{{ route('admin.products.edit', $product) }}#product-images" class="font-semibold text-ink hover:underline">
+                                    {{ $hasImage ? 'Edit images' : 'Add image' }}
+                                </a>
                                 <a href="{{ route('admin.products.edit', $product) }}" class="font-semibold text-brand-deep hover:underline">Edit</a>
                                 <x-admin.delete-form
                                     :action="route('admin.products.destroy', $product)"

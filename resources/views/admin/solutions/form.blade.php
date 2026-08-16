@@ -71,14 +71,15 @@
                         <input type="number" name="sort_order" min="0" value="{{ old('sort_order', $solution->sort_order) }}" class="w-full border border-line bg-mist px-3 py-2.5 text-sm">
                     </div>
                 </div>
-                <div class="border border-line bg-white p-6">
-                    <h2 class="font-display text-2xl font-bold uppercase tracking-wide">Solution image</h2>
-                    @if ($solution->image)
-                        <img src="{{ $solution->image->url() }}" alt="{{ $solution->name }}" class="mt-4 aspect-video w-full object-cover bg-mist">
-                    @endif
-                    <input type="file" name="image" accept="image/*" class="mt-4 w-full border border-line bg-mist px-3 py-2 text-sm">
+                <x-admin.image-field
+                    name="image"
+                    label="Solution image"
+                    class="border border-line bg-white p-6"
+                    :existing-url="$solution->image?->url()"
+                    :existing-alt="$solution->name"
+                >
                     @error('image') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
-                </div>
+                </x-admin.image-field>
                 <div class="border border-line bg-white p-6">
                     <h2 class="font-display text-2xl font-bold uppercase tracking-wide">Recommended products</h2>
                     <div class="mt-4 max-h-72 space-y-2 overflow-y-auto">

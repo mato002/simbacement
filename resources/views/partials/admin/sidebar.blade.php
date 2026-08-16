@@ -57,39 +57,70 @@
 ></div>
 
 <aside
-    class="fixed inset-y-0 left-0 z-50 flex w-72 -translate-x-full flex-col bg-ink text-white transition lg:static lg:translate-x-0"
-    :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
+    class="fixed inset-y-0 left-0 z-50 flex h-dvh w-72 flex-col bg-ink text-white transition-all duration-300"
+    :class="[
+        sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
+        sidebarCollapsed ? 'lg:w-[4.75rem]' : 'lg:w-72'
+    ]"
 >
-    <div class="flex h-[4.25rem] items-center gap-3 border-b border-white/10 px-5">
-        <span class="flex h-10 w-10 items-center justify-center bg-brand text-ink font-display text-lg font-bold">SC</span>
-        <div>
-            <p class="font-display text-lg font-bold tracking-wide uppercase">Simba Cement</p>
-            <p class="text-[11px] tracking-[0.16em] text-white/50 uppercase">Enterprise CMS</p>
+    <div class="flex h-[4.5rem] shrink-0 items-center gap-3 border-b border-white/10 px-3 sm:px-4">
+        <span class="flex h-10 w-10 shrink-0 items-center justify-center bg-brand text-ink font-display text-lg font-bold">SC</span>
+        <div class="min-w-0 flex-1 overflow-hidden" :class="sidebarCollapsed ? 'lg:hidden' : ''">
+            <p class="truncate font-display text-lg font-bold tracking-wide uppercase">Simba Cement</p>
+            <p class="truncate text-[11px] tracking-[0.16em] text-white/50 uppercase">Enterprise CMS</p>
         </div>
+        <button
+            type="button"
+            class="ml-auto hidden h-8 w-8 shrink-0 items-center justify-center border border-white/15 text-white/70 transition hover:border-brand hover:text-brand lg:inline-flex"
+            @click="toggleSidebarCollapsed()"
+            :aria-label="sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+            :title="sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+        >
+            <i class="fa-solid text-xs" :class="sidebarCollapsed ? 'fa-angles-right' : 'fa-angles-left'" aria-hidden="true"></i>
+        </button>
+        <button
+            type="button"
+            class="ml-auto inline-flex h-8 w-8 items-center justify-center border border-white/15 text-white/70 lg:hidden"
+            @click="sidebarOpen = false"
+            aria-label="Close sidebar"
+        >
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
     </div>
 
-    <nav class="flex-1 space-y-5 overflow-y-auto px-3 py-4">
+    <nav class="admin-sidebar-scroll min-h-0 flex-1 space-y-5 overflow-y-auto overscroll-contain px-2 py-4 sm:px-3">
         @foreach ($navGroups as $group)
             <div>
-                <p class="mb-1.5 px-3 text-[10px] font-semibold tracking-[0.18em] text-white/35 uppercase">{{ $group['label'] }}</p>
+                <p
+                    class="mb-1.5 px-3 text-[10px] font-semibold tracking-[0.18em] text-white/35 uppercase"
+                    :class="sidebarCollapsed ? 'lg:hidden' : ''"
+                >
+                    {{ $group['label'] }}
+                </p>
                 <div class="space-y-0.5">
                     @foreach ($group['items'] as $link)
                         @if ($link['ready'] && $link['route'])
                             <a
                                 href="{{ route($link['route']) }}"
                                 class="flex items-center gap-3 rounded-sm px-3 py-2.5 text-sm font-medium {{ request()->routeIs($link['match']) ? 'bg-brand text-ink' : 'text-white/75 hover:bg-white/10 hover:text-white' }}"
+                                :class="sidebarCollapsed ? 'lg:justify-center lg:px-0' : ''"
+                                title="{{ $link['label'] }}"
                                 @click="sidebarOpen = false"
                             >
-                                <i class="{{ $link['icon'] }} w-4 text-center" aria-hidden="true"></i>
-                                {{ $link['label'] }}
+                                <i class="{{ $link['icon'] }} w-4 shrink-0 text-center" aria-hidden="true"></i>
+                                <span :class="sidebarCollapsed ? 'lg:hidden' : ''">{{ $link['label'] }}</span>
                             </a>
                         @else
-                            <span class="flex items-center justify-between rounded-sm px-3 py-2.5 text-sm text-white/30">
+                            <span
+                                class="flex items-center justify-between rounded-sm px-3 py-2.5 text-sm text-white/30"
+                                :class="sidebarCollapsed ? 'lg:justify-center lg:px-0' : ''"
+                                title="{{ $link['label'] }} (Soon)"
+                            >
                                 <span class="flex items-center gap-3">
-                                    <i class="{{ $link['icon'] }} w-4 text-center" aria-hidden="true"></i>
-                                    {{ $link['label'] }}
+                                    <i class="{{ $link['icon'] }} w-4 shrink-0 text-center" aria-hidden="true"></i>
+                                    <span :class="sidebarCollapsed ? 'lg:hidden' : ''">{{ $link['label'] }}</span>
                                 </span>
-                                <span class="text-[10px] tracking-wide uppercase">Soon</span>
+                                <span class="text-[10px] tracking-wide uppercase" :class="sidebarCollapsed ? 'lg:hidden' : ''">Soon</span>
                             </span>
                         @endif
                     @endforeach
@@ -98,10 +129,21 @@
         @endforeach
     </nav>
 
-    <div class="border-t border-white/10 p-4">
+    <div class="shrink-0 border-t border-white/10 p-3" :class="sidebarCollapsed ? 'lg:hidden' : ''">
         <div class="rounded-sm border border-white/10 bg-white/5 p-3">
             <p class="text-[11px] font-semibold tracking-wide text-brand uppercase">Workspace</p>
             <p class="mt-1 text-xs text-white/65">Quotes-only commerce · content publishing · careers intake</p>
         </div>
+    </div>
+
+    <div class="shrink-0 border-t border-white/10 p-2 lg:hidden">
+        <button
+            type="button"
+            class="flex w-full items-center justify-center gap-2 border border-white/15 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-white/70"
+            @click="sidebarOpen = false"
+        >
+            <i class="fa-solid fa-angles-left" aria-hidden="true"></i>
+            Hide menu
+        </button>
     </div>
 </aside>

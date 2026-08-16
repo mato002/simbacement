@@ -171,4 +171,30 @@
     .admin-header-alert-icon {
         @apply inline-flex h-9 w-9 shrink-0 items-center justify-center;
     }
+
+    .admin-sidebar-scroll {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+    }
+
+    .admin-sidebar-scroll::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .admin-sidebar-scroll::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.25);
+        border-radius: 999px;
+    }
+
+    .admin-global-search-input {
+        @apply h-10 w-full border border-line bg-mist pr-16 pl-10 text-sm text-ink outline-none transition placeholder:text-steel focus:border-brand focus:bg-white;
+    }
+
+    .admin-global-search-menu {
+        @apply absolute top-[calc(100%+0.5rem)] left-0 z-50 w-full overflow-hidden border border-line bg-white shadow-[0_12px_40px_rgba(18,18,18,0.12)];
+    }
+
+    .admin-global-search-item {
+        @apply flex items-center gap-3 border-b border-line/70 px-4 py-3 transition hover:bg-mist;
+    }
 }

@@ -38,7 +38,14 @@
                             </span>
                         </td>
                         <td class="px-4 py-3 text-right">
-                            <a href="{{ route('admin.categories.edit', $category) }}" class="font-semibold text-brand-deep hover:underline">Edit</a>
+                            <div class="flex items-center justify-end gap-3">
+                                <a href="{{ route('admin.categories.edit', $category) }}" class="font-semibold text-brand-deep hover:underline">Edit</a>
+                                <x-admin.delete-form
+                                    :action="route('admin.categories.destroy', $category)"
+                                    title="Delete this category?"
+                                    text="Only empty categories can be deleted."
+                                />
+                            </div>
                         </td>
                     </tr>
                 @endforeach

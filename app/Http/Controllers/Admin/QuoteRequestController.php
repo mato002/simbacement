@@ -83,4 +83,15 @@ class QuoteRequestController extends Controller
 
         return back()->with('success', "Quote {$quote->reference} updated.");
     }
+
+    public function destroy(QuoteRequest $quote): RedirectResponse
+    {
+        $reference = $quote->reference;
+        $quote->items()->delete();
+        $quote->delete();
+
+        return redirect()
+            ->route('admin.quotes.index')
+            ->with('success', "Quote {$reference} deleted.");
+    }
 }

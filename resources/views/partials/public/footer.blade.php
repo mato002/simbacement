@@ -9,8 +9,8 @@
 @endphp
 
 <footer class="mt-auto bg-ink text-white">
-    <div class="container-page grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-4">
-        <div class="lg:col-span-1">
+    <div class="container-page grid grid-cols-2 gap-8 py-10 lg:grid-cols-4 lg:gap-10 lg:py-14">
+        <div class="col-span-2 lg:col-span-1">
             <div class="mb-4 flex items-center gap-3">
                 <span class="flex h-10 w-10 items-center justify-center bg-brand text-ink font-display text-xl font-bold">SC</span>
                 <span class="font-display text-2xl font-bold tracking-wide uppercase">{{ $siteCompany['legal_name'] ?? 'Simba Cement' }}</span>

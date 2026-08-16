@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Page;
+use App\Services\MediaLibraryService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -39,9 +40,10 @@ class PageController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, MediaLibraryService $mediaLibrary): RedirectResponse
     {
         $page = Page::query()->create($this->validated($request));
+        $this->syncHeroImage($page, $request, $mediaLibrary);
 
         return redirect()
             ->route('admin.pages.edit', $page)
@@ -78,9 +80,10 @@ class PageController extends Controller
         ]);
     }
 
-    public function update(Request $request, Page $page): RedirectResponse
+    public function update(Request $request, Page $page, MediaLibraryService $mediaLibrary): RedirectResponse
     {
         $page->update($this->validated($request, $page));
+        $this->syncHeroImage($page, $request, $mediaLibrary);
 
         return redirect()
             ->route('admin.pages.edit', $page)
@@ -89,6 +92,10 @@ class PageController extends Controller
 
     public function destroy(Page $page): RedirectResponse
     {
+        if (in_array($page->slug, ['about', 'manufacturing', 'quality', 'sustainability'], true)) {
+            return back()->with('error', 'Core corporate pages cannot be deleted.');
+        }
+
         $page->delete();
 
         return redirect()
@@ -108,6 +115,7 @@ class PageController extends Controller
             'headline' => ['nullable', 'string', 'max:255'],
             'summary' => ['nullable', 'string'],
             'hero_image_url' => ['nullable', 'url', 'max:500'],
+            'hero_image' => ['nullable', 'image', 'max:5120'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'seo_title' => ['nullable', 'string', 'max:180'],
             'meta_description' => ['nullable', 'string', 'max:300'],
@@ -140,6 +148,24 @@ class PageController extends Controller
             ->values()
             ->all();
 
+        unset($data['hero_image']);
+
         return $data;
+    }
+
+    private function syncHeroImage(Page $page, Request $request, MediaLibraryService $mediaLibrary): void
+    {
+        if (! $request->hasFile('hero_image')) {
+            return;
+        }
+
+        $media = $mediaLibrary->store(
+            $request->file('hero_image'),
+            $request->user(),
+            'pages',
+            $page->title
+        );
+
+        $page->update(['hero_image_url' => $media->url()]);
     }
 }

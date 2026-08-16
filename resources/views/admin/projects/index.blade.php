@@ -43,7 +43,13 @@
                         <td class="px-4 py-3">{{ $project->year ?: '—' }}</td>
                         <td class="px-4 py-3">{{ $project->is_published ? 'Published' : 'Draft' }}</td>
                         <td class="px-4 py-3 text-right">
-                            <a href="{{ route('admin.projects.edit', $project) }}" class="font-semibold text-brand-deep hover:underline">Edit</a>
+                            <div class="flex items-center justify-end gap-3">
+                                <a href="{{ route('admin.projects.edit', $project) }}" class="font-semibold text-brand-deep hover:underline">Edit</a>
+                                <x-admin.delete-form
+                                    :action="route('admin.projects.destroy', $project)"
+                                    title="Delete this project?"
+                                />
+                            </div>
                         </td>
                     </tr>
                 @empty

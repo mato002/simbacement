@@ -50,5 +50,14 @@
             </div>
             <button class="btn-primary w-full">Update application</button>
         </form>
+
+        <div class="mt-4 border border-line bg-white p-6">
+            <x-admin.delete-form
+                :action="route('admin.applications.destroy', $application)"
+                label="Delete application"
+                title="Delete this application?"
+                text="The CV file will also be removed."
+            />
+        </div>
     </div>
 @endsection

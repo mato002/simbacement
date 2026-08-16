@@ -7,15 +7,15 @@
     <section class="border-b border-line bg-white">
         <div class="container-page py-14">
             <p class="section-label mb-3">Catalogue</p>
-            <h1 class="heading-display text-ink !text-5xl">Compare Products</h1>
-            <p class="mt-4 max-w-2xl text-lg text-steel">Select up to four products and compare key specifications side by side.</p>
+            <h1 class="heading-display text-ink">Compare Products</h1>
+            <p class="mt-4 max-w-2xl text-base text-steel sm:text-lg">Select up to four products and compare key specifications side by side.</p>
         </div>
     </section>
 
     <section class="py-10">
         <div class="container-page space-y-8">
             <form method="GET" action="{{ route('products.compare') }}" class="border border-line bg-white p-5">
-                <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
                     @foreach ($comparable as $product)
                         <label class="flex items-start gap-3 border border-line px-3 py-3 text-sm {{ in_array($product->slug, $selectedSlugs, true) ? 'border-brand bg-brand/10' : '' }}">
                             <input

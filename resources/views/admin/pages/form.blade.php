@@ -13,6 +13,7 @@
     <form
         method="POST"
         action="{{ $page->exists ? route('admin.pages.update', $page) : route('admin.pages.store') }}"
+        enctype="multipart/form-data"
         class="space-y-6"
         x-data="{ sections: {{ \Illuminate\Support\Js::from($sectionRows) }} }"
     >
@@ -46,8 +47,17 @@
                     <textarea name="summary" rows="3" class="w-full border border-line bg-mist px-3 py-2.5 text-sm">{{ old('summary', $page->summary) }}</textarea>
                 </div>
                 <div>
-                    <label class="mb-1.5 block text-sm font-semibold">Hero image URL</label>
-                    <input type="url" name="hero_image_url" value="{{ old('hero_image_url', $page->hero_image_url) }}" class="w-full border border-line bg-mist px-3 py-2.5 text-sm" placeholder="Optional override URL">
+                    <label class="mb-1.5 block text-sm font-semibold">Hero image</label>
+                    @if ($page->heroImageUrl())
+                        <img src="{{ $page->heroImageUrl() }}" alt="{{ $page->title }}" class="mb-3 aspect-video w-full object-cover bg-mist">
+                    @endif
+                    <input type="file" name="hero_image" accept="image/*" class="w-full border border-line bg-mist px-3 py-2 text-sm">
+                    <p class="mt-2 text-xs text-steel">Upload a new hero, or keep using an external URL below.</p>
+                    @error('hero_image') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label class="mb-1.5 block text-sm font-semibold">Hero image URL (optional override)</label>
+                    <input type="url" name="hero_image_url" value="{{ old('hero_image_url', $page->hero_image_url) }}" class="w-full border border-line bg-mist px-3 py-2.5 text-sm" placeholder="https://…">
                 </div>
 
                 <div>
@@ -106,10 +116,12 @@
     </form>
 
     @if ($page->exists && ! in_array($page->slug, ['about', 'manufacturing', 'quality', 'sustainability'], true))
-        <form method="POST" action="{{ route('admin.pages.destroy', $page) }}" class="mt-6" onsubmit="return confirm('Delete this page?')">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="text-sm font-semibold text-red-700 hover:underline">Delete page</button>
-        </form>
+        <div class="mt-6">
+            <x-admin.delete-form
+                :action="route('admin.pages.destroy', $page)"
+                label="Delete page"
+                title="Delete this page?"
+            />
+        </div>
     @endif
 @endsection

@@ -12,7 +12,7 @@
                 <span class="text-ink">{{ $job->title }}</span>
             </nav>
             <p class="section-label mb-3">{{ $job->department ?: 'Opportunity' }}</p>
-            <h1 class="heading-display text-ink !text-5xl">{{ $job->title }}</h1>
+            <h1 class="heading-display text-ink">{{ $job->title }}</h1>
             <p class="mt-4 text-steel">
                 {{ $job->location ?: 'Kenya' }} · {{ str_replace('-', ' ', ucfirst($job->employment_type)) }}
                 @if ($job->closes_at) · Closes {{ $job->closes_at->format('d M Y') }} @endif

@@ -55,6 +55,19 @@ class JobApplicationController extends Controller
         return back()->with('success', 'Application updated.');
     }
 
+    public function destroy(JobApplication $application): RedirectResponse
+    {
+        if ($application->cv_path && Storage::disk('local')->exists($application->cv_path)) {
+            Storage::disk('local')->delete($application->cv_path);
+        }
+
+        $application->delete();
+
+        return redirect()
+            ->route('admin.applications.index')
+            ->with('success', 'Application deleted.');
+    }
+
     public function downloadCv(JobApplication $application): StreamedResponse
     {
         abort_unless(Storage::disk('local')->exists($application->cv_path), 404);

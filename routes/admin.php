@@ -49,6 +49,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::patch('quotes/{quote}', [QuoteRequestController::class, 'update'])
                 ->middleware('permission:quotes.edit')
                 ->name('quotes.update');
+            Route::delete('quotes/{quote}', [QuoteRequestController::class, 'destroy'])
+                ->middleware('permission:quotes.edit')
+                ->name('quotes.destroy');
         });
 
         Route::middleware('permission:content.view')->group(function () {
@@ -67,6 +70,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::patch('messages/{message}', [ContactMessageController::class, 'update'])
                 ->middleware('permission:messages.edit')
                 ->name('messages.update');
+            Route::delete('messages/{message}', [ContactMessageController::class, 'destroy'])
+                ->middleware('permission:messages.edit')
+                ->name('messages.destroy');
         });
 
         Route::middleware('permission:careers.view')->group(function () {
@@ -76,6 +82,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::patch('applications/{application}', [JobApplicationController::class, 'update'])
                 ->middleware('permission:careers.edit')
                 ->name('applications.update');
+            Route::delete('applications/{application}', [JobApplicationController::class, 'destroy'])
+                ->middleware('permission:careers.edit')
+                ->name('applications.destroy');
             Route::get('applications/{application}/cv', [JobApplicationController::class, 'downloadCv'])
                 ->name('applications.cv');
         });

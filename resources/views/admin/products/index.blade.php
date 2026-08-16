@@ -48,7 +48,13 @@
                             {{ $product->is_active && $product->published_at ? 'Published' : ($product->is_active ? 'Draft' : 'Inactive') }}
                         </td>
                         <td class="px-4 py-3 text-right">
-                            <a href="{{ route('admin.products.edit', $product) }}" class="font-semibold text-brand-deep hover:underline">Edit</a>
+                            <div class="flex items-center justify-end gap-3">
+                                <a href="{{ route('admin.products.edit', $product) }}" class="font-semibold text-brand-deep hover:underline">Edit</a>
+                                <x-admin.delete-form
+                                    :action="route('admin.products.destroy', $product)"
+                                    title="Delete this product?"
+                                />
+                            </div>
                         </td>
                     </tr>
                 @empty

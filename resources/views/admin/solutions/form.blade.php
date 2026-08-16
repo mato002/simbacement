@@ -13,6 +13,7 @@
     <form
         method="POST"
         action="{{ $solution->exists ? route('admin.solutions.update', $solution) : route('admin.solutions.store') }}"
+        enctype="multipart/form-data"
         class="space-y-6"
         x-data="{ highlights: {{ \Illuminate\Support\Js::from($highlightRows) }} }"
     >
@@ -71,6 +72,14 @@
                     </div>
                 </div>
                 <div class="border border-line bg-white p-6">
+                    <h2 class="font-display text-2xl font-bold uppercase tracking-wide">Solution image</h2>
+                    @if ($solution->image)
+                        <img src="{{ $solution->image->url() }}" alt="{{ $solution->name }}" class="mt-4 aspect-video w-full object-cover bg-mist">
+                    @endif
+                    <input type="file" name="image" accept="image/*" class="mt-4 w-full border border-line bg-mist px-3 py-2 text-sm">
+                    @error('image') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                </div>
+                <div class="border border-line bg-white p-6">
                     <h2 class="font-display text-2xl font-bold uppercase tracking-wide">Recommended products</h2>
                     <div class="mt-4 max-h-72 space-y-2 overflow-y-auto">
                         @foreach ($products as $product)
@@ -98,10 +107,12 @@
     </form>
 
     @if ($solution->exists)
-        <form method="POST" action="{{ route('admin.solutions.destroy', $solution) }}" class="mt-6" onsubmit="return confirm('Delete this solution?')">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="text-sm font-semibold text-red-700 hover:underline">Delete solution</button>
-        </form>
+        <div class="mt-6">
+            <x-admin.delete-form
+                :action="route('admin.solutions.destroy', $solution)"
+                label="Delete solution"
+                title="Delete this solution?"
+            />
+        </div>
     @endif
 @endsection

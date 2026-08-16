@@ -27,9 +27,17 @@
                         <td class="px-4 py-3 font-semibold">{{ $page->title }}</td>
                         <td class="px-4 py-3 text-steel">/{{ $page->slug }}</td>
                         <td class="px-4 py-3">{{ $page->is_published ? 'Published' : 'Draft' }}</td>
-                        <td class="px-4 py-3 text-right space-x-3">
-                            <a href="{{ url('/'.$page->slug) }}" target="_blank" class="font-semibold text-steel hover:underline">View</a>
-                            <a href="{{ route('admin.pages.edit', $page) }}" class="font-semibold text-brand-deep hover:underline">Edit</a>
+                        <td class="px-4 py-3 text-right">
+                            <div class="flex items-center justify-end gap-3">
+                                <a href="{{ url('/'.$page->slug) }}" target="_blank" class="font-semibold text-steel hover:underline">View</a>
+                                <a href="{{ route('admin.pages.edit', $page) }}" class="font-semibold text-brand-deep hover:underline">Edit</a>
+                                @unless (in_array($page->slug, ['about', 'manufacturing', 'quality', 'sustainability'], true))
+                                    <x-admin.delete-form
+                                        :action="route('admin.pages.destroy', $page)"
+                                        title="Delete this page?"
+                                    />
+                                @endunless
+                            </div>
                         </td>
                     </tr>
                 @endforeach

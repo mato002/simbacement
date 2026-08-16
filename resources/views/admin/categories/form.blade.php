@@ -13,6 +13,7 @@
     <form
         method="POST"
         action="{{ $category->exists ? route('admin.categories.update', $category) : route('admin.categories.store') }}"
+        enctype="multipart/form-data"
         class="max-w-3xl space-y-5 border border-line bg-white p-6"
     >
         @csrf
@@ -48,6 +49,16 @@
             <textarea name="description" rows="4" class="w-full border border-line bg-mist px-3 py-2.5 text-sm">{{ old('description', $category->description) }}</textarea>
         </div>
 
+        <div>
+            <label class="mb-1.5 block text-sm font-semibold">Category image</label>
+            @if ($category->image)
+                <img src="{{ $category->image->url() }}" alt="{{ $category->name }}" class="mb-3 aspect-video w-full max-w-md object-cover bg-mist">
+            @endif
+            <input type="file" name="image" accept="image/*" class="w-full border border-line bg-mist px-3 py-2 text-sm">
+            <p class="mt-1 text-xs text-steel">Upload to replace the image shown on the website catalogue.</p>
+            @error('image') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+        </div>
+
         <div class="grid gap-5 md:grid-cols-2">
             <div>
                 <label class="mb-1.5 block text-sm font-semibold">Sort order</label>
@@ -79,10 +90,13 @@
     </form>
 
     @if ($category->exists)
-        <form method="POST" action="{{ route('admin.categories.destroy', $category) }}" class="mt-6" onsubmit="return confirm('Delete this category?')">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="text-sm font-semibold text-red-700 hover:underline">Delete category</button>
-        </form>
+        <div class="mt-6">
+            <x-admin.delete-form
+                :action="route('admin.categories.destroy', $category)"
+                label="Delete category"
+                title="Delete this category?"
+                text="Only empty categories can be deleted."
+            />
+        </div>
     @endif
 @endsection

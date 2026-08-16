@@ -71,4 +71,104 @@
     .nav-link-active {
         @apply text-ink;
     }
+
+    .card-grid {
+        @apply grid grid-cols-2 gap-3 sm:gap-6 xl:grid-cols-3;
+    }
+
+    .card-grid-4 {
+        @apply grid grid-cols-2 gap-3 sm:gap-5 xl:grid-cols-4;
+    }
+
+    .card-tile {
+        @apply flex flex-col overflow-hidden border border-line bg-white transition hover:border-brand;
+    }
+
+    .card-tile-body {
+        @apply flex flex-1 flex-col p-3 sm:p-5;
+    }
+
+    .card-kicker {
+        @apply text-[10px] font-semibold tracking-wide text-brand-deep uppercase sm:text-xs;
+    }
+
+    .card-title {
+        @apply mt-1 min-w-0 break-words font-display text-[15px] leading-tight font-bold uppercase tracking-wide sm:mt-2 sm:text-2xl;
+    }
+
+    .filter-toolbar {
+        @apply mb-4 flex items-center gap-2 lg:hidden;
+    }
+
+    .filter-field {
+        @apply w-full border border-line bg-mist px-3 py-2.5 text-sm;
+    }
+
+    .admin-panel {
+        @apply border border-line bg-white;
+    }
+
+    .admin-panel-header {
+        @apply flex items-center justify-between gap-3 border-b border-line px-5 py-4;
+    }
+
+    .admin-kpi {
+        @apply relative overflow-hidden border border-line bg-white p-5 transition hover:border-brand;
+    }
+
+    .admin-badge {
+        @apply inline-flex items-center rounded-sm px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase;
+    }
+
+    .admin-badge-new {
+        @apply bg-brand/20 text-brand-deep;
+    }
+
+    .admin-badge-progress {
+        @apply bg-ink/10 text-ink;
+    }
+
+    .admin-badge-success {
+        @apply bg-emerald-100 text-emerald-800;
+    }
+
+    .admin-badge-muted {
+        @apply bg-concrete text-steel;
+    }
+
+    .admin-badge-danger {
+        @apply bg-red-100 text-red-700;
+    }
+
+    .admin-header-btn {
+        @apply inline-flex h-10 items-center justify-center gap-2 border border-line bg-white px-3 text-xs font-semibold tracking-wide text-ink uppercase transition hover:border-brand hover:bg-mist;
+    }
+
+    .admin-header-icon-btn {
+        @apply relative inline-flex h-10 w-10 items-center justify-center border border-line bg-white text-ink transition hover:border-brand hover:bg-mist;
+    }
+
+    .admin-header-badge {
+        @apply absolute -right-1 -top-1 inline-flex min-w-4 items-center justify-center rounded-full bg-brand px-1 text-[10px] font-bold leading-none text-ink;
+    }
+
+    .admin-header-menu {
+        @apply absolute top-[calc(100%+0.5rem)] z-50 overflow-hidden border border-line bg-white shadow-[0_12px_40px_rgba(18,18,18,0.12)];
+    }
+
+    .admin-header-menu-label {
+        @apply border-b border-line px-4 py-2.5 text-[10px] font-semibold tracking-[0.16em] text-steel uppercase;
+    }
+
+    .admin-header-menu-item {
+        @apply flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-ink transition hover:bg-mist;
+    }
+
+    .admin-header-alert {
+        @apply flex items-center gap-3 border-b border-line px-4 py-3 transition hover:bg-mist;
+    }
+
+    .admin-header-alert-icon {
+        @apply inline-flex h-9 w-9 shrink-0 items-center justify-center;
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ProductCategory;
+use App\Services\MediaLibraryService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -15,7 +16,7 @@ class ProductCategoryController extends Controller
     public function index(): View
     {
         $categories = ProductCategory::query()
-            ->with('parent')
+            ->with(['parent', 'image'])
             ->withCount('products')
             ->orderBy('sort_order')
             ->orderBy('name')
@@ -32,9 +33,10 @@ class ProductCategoryController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, MediaLibraryService $mediaLibrary): RedirectResponse
     {
         $category = ProductCategory::query()->create($this->validated($request));
+        $this->syncImage($category, $request, $mediaLibrary);
 
         return redirect()
             ->route('admin.categories.index')
@@ -43,6 +45,8 @@ class ProductCategoryController extends Controller
 
     public function edit(ProductCategory $category): View
     {
+        $category->load('image');
+
         return view('admin.categories.form', [
             'category' => $category,
             'parents' => ProductCategory::query()
@@ -53,9 +57,10 @@ class ProductCategoryController extends Controller
         ]);
     }
 
-    public function update(Request $request, ProductCategory $category): RedirectResponse
+    public function update(Request $request, ProductCategory $category, MediaLibraryService $mediaLibrary): RedirectResponse
     {
         $category->update($this->validated($request, $category));
+        $this->syncImage($category, $request, $mediaLibrary);
 
         return redirect()
             ->route('admin.categories.index')
@@ -65,7 +70,7 @@ class ProductCategoryController extends Controller
     public function destroy(ProductCategory $category): RedirectResponse
     {
         if ($category->products()->exists()) {
-            return back()->withErrors(['category' => 'Move or delete products in this category first.']);
+            return back()->with('error', 'Move or delete products in this category first.');
         }
 
         $category->delete();
@@ -89,12 +94,31 @@ class ProductCategoryController extends Controller
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'seo_title' => ['nullable', 'string', 'max:180'],
             'meta_description' => ['nullable', 'string', 'max:300'],
+            'image' => ['nullable', 'image', 'max:5120'],
         ]);
 
         $data['slug'] = filled($data['slug'] ?? null) ? $data['slug'] : Str::slug($data['name']);
         $data['is_active'] = $request->boolean('is_active');
         $data['sort_order'] = $data['sort_order'] ?? 0;
 
+        unset($data['image']);
+
         return $data;
+    }
+
+    private function syncImage(ProductCategory $category, Request $request, MediaLibraryService $mediaLibrary): void
+    {
+        if (! $request->hasFile('image')) {
+            return;
+        }
+
+        $media = $mediaLibrary->store(
+            $request->file('image'),
+            $request->user(),
+            'categories',
+            $category->name
+        );
+
+        $category->update(['image_id' => $media->id]);
     }
 }

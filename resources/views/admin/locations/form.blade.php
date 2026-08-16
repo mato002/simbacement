@@ -56,9 +56,12 @@
     </form>
 
     @if ($location->exists)
-        <form method="POST" action="{{ route('admin.locations.destroy', $location) }}" class="mt-6" onsubmit="return confirm('Delete location?')">
-            @csrf @method('DELETE')
-            <button class="text-sm font-semibold text-red-700 hover:underline">Delete location</button>
-        </form>
+        <div class="mt-6">
+            <x-admin.delete-form
+                :action="route('admin.locations.destroy', $location)"
+                label="Delete location"
+                title="Delete this location?"
+            />
+        </div>
     @endif
 @endsection

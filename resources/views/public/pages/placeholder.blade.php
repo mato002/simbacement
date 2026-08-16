@@ -19,7 +19,7 @@
         </div>
         <div class="container-page relative py-16 sm:py-20">
             <p class="section-label mb-3 text-brand">{{ $eyebrow ?? 'Coming next' }}</p>
-            <h1 class="heading-display !text-5xl">{{ $title }}</h1>
+            <h1 class="heading-display">{{ $title }}</h1>
             <p class="mt-5 max-w-2xl text-lg text-white/75">{{ $description }}</p>
             <div class="mt-8 flex flex-wrap gap-3">
                 <a href="{{ route('quote.create') }}" class="btn-primary">

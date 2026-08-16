@@ -51,9 +51,12 @@
     </form>
 
     @if ($job->exists)
-        <form method="POST" action="{{ route('admin.jobs.destroy', $job) }}" class="mt-6" onsubmit="return confirm('Delete job?')">
-            @csrf @method('DELETE')
-            <button class="text-sm font-semibold text-red-700 hover:underline">Delete job</button>
-        </form>
+        <div class="mt-6">
+            <x-admin.delete-form
+                :action="route('admin.jobs.destroy', $job)"
+                label="Delete job"
+                title="Delete this job listing?"
+            />
+        </div>
     @endif
 @endsection

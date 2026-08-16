@@ -18,8 +18,8 @@
                 </div>
                 <div>
                     <p class="section-label mb-3">{{ $project->category->label() }}</p>
-                    <h1 class="heading-display text-ink !text-5xl">{{ $project->title }}</h1>
-                    <dl class="mt-6 grid gap-3 text-sm sm:grid-cols-2">
+                    <h1 class="heading-display text-ink">{{ $project->title }}</h1>
+                    <dl class="mt-6 grid grid-cols-2 gap-3 text-sm">
                         <div><dt class="text-steel">Location</dt><dd class="font-semibold">{{ $project->location ?: '—' }}</dd></div>
                         <div><dt class="text-steel">Client</dt><dd class="font-semibold">{{ $project->client ?: '—' }}</dd></div>
                         <div><dt class="text-steel">Year</dt><dd class="font-semibold">{{ $project->year ?: '—' }}</dd></div>
@@ -50,11 +50,11 @@
             @if ($project->products->isNotEmpty())
                 <div class="border-b border-line pb-10">
                     <h2 class="font-display text-3xl font-bold uppercase tracking-wide">Products Used</h2>
-                    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    <div class="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-3">
                         @foreach ($project->products as $product)
-                            <a href="{{ route('products.show', $product) }}" class="border border-line p-4 hover:border-brand">
-                                <p class="text-xs font-semibold tracking-wide text-brand-deep uppercase">{{ $product->category?->name }}</p>
-                                <p class="mt-1 font-display text-xl font-bold uppercase tracking-wide">{{ $product->name }}</p>
+                            <a href="{{ route('products.show', $product) }}" class="border border-line p-3 hover:border-brand sm:p-4">
+                                <p class="card-kicker">{{ $product->category?->name }}</p>
+                                <p class="card-title">{{ $product->name }}</p>
                             </a>
                         @endforeach
                     </div>
@@ -64,7 +64,7 @@
             @if ($project->images->isNotEmpty())
                 <div>
                     <h2 class="font-display text-3xl font-bold uppercase tracking-wide">Project Gallery</h2>
-                    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    <div class="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-3">
                         @foreach ($project->images as $image)
                             <figure class="overflow-hidden border border-line bg-concrete">
                                 <img src="{{ $image->media->url() }}" alt="{{ $image->caption ?: $project->title }}" class="aspect-[4/3] w-full object-cover" loading="lazy">
@@ -83,15 +83,15 @@
         <section class="border-t border-line bg-white py-14">
             <div class="container-page">
                 <h2 class="font-display text-3xl font-bold uppercase tracking-wide">Related projects</h2>
-                <div class="mt-8 grid gap-6 md:grid-cols-3">
+                <div class="mt-8 card-grid">
                     @foreach ($related as $item)
-                        <a href="{{ route('projects.show', $item) }}" class="border border-line hover:border-brand">
+                        <a href="{{ route('projects.show', $item) }}" class="card-tile">
                             <div class="aspect-[16/10] overflow-hidden bg-concrete">
                                 <img src="{{ $item->imageUrl() }}" alt="{{ $item->imageAlt() }}" class="h-full w-full object-cover" loading="lazy">
                             </div>
-                            <div class="p-4">
-                                <p class="text-xs font-semibold tracking-wide text-brand-deep uppercase">{{ $item->category->label() }}</p>
-                                <h3 class="mt-1 font-display text-xl font-bold uppercase tracking-wide">{{ $item->title }}</h3>
+                            <div class="card-tile-body">
+                                <p class="card-kicker">{{ $item->category->label() }}</p>
+                                <h3 class="card-title">{{ $item->title }}</h3>
                             </div>
                         </a>
                     @endforeach

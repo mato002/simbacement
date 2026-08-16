@@ -28,7 +28,13 @@
                         <td class="px-4 py-3">{{ $solution->products_count }}</td>
                         <td class="px-4 py-3">{{ $solution->is_active ? 'Active' : 'Inactive' }}</td>
                         <td class="px-4 py-3 text-right">
-                            <a href="{{ route('admin.solutions.edit', $solution) }}" class="font-semibold text-brand-deep hover:underline">Edit</a>
+                            <div class="flex items-center justify-end gap-3">
+                                <a href="{{ route('admin.solutions.edit', $solution) }}" class="font-semibold text-brand-deep hover:underline">Edit</a>
+                                <x-admin.delete-form
+                                    :action="route('admin.solutions.destroy', $solution)"
+                                    title="Delete this solution?"
+                                />
+                            </div>
                         </td>
                     </tr>
                 @endforeach

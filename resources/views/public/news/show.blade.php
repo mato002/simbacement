@@ -17,7 +17,7 @@
             </nav>
 
             <p class="section-label mb-3">{{ $article->category->label() }}</p>
-            <h1 class="heading-display max-w-4xl text-ink !text-5xl">{{ $article->title }}</h1>
+            <h1 class="heading-display max-w-4xl text-ink">{{ $article->title }}</h1>
             <p class="mt-4 text-sm text-steel">
                 {{ $article->published_at?->format('d M Y') }}
                 @if ($article->author) · {{ $article->author->name }} @endif
@@ -39,15 +39,15 @@
         <section class="py-14">
             <div class="container-page">
                 <h2 class="font-display text-3xl font-bold uppercase tracking-wide">Related articles</h2>
-                <div class="mt-8 grid gap-6 md:grid-cols-3">
+                <div class="mt-8 card-grid">
                     @foreach ($related as $item)
-                        <a href="{{ route('news.show', $item) }}" class="border border-line hover:border-brand">
+                        <a href="{{ route('news.show', $item) }}" class="card-tile">
                             <div class="aspect-[16/10] overflow-hidden bg-concrete">
                                 <img src="{{ $item->imageUrl() }}" alt="{{ $item->imageAlt() }}" class="h-full w-full object-cover" loading="lazy">
                             </div>
-                            <div class="p-4">
-                                <p class="text-xs font-semibold tracking-wide text-brand-deep uppercase">{{ $item->category->label() }}</p>
-                                <h3 class="mt-1 font-display text-xl font-bold uppercase tracking-wide">{{ $item->title }}</h3>
+                            <div class="card-tile-body">
+                                <p class="card-kicker">{{ $item->category->label() }}</p>
+                                <h3 class="card-title">{{ $item->title }}</h3>
                             </div>
                         </a>
                     @endforeach

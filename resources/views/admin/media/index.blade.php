@@ -49,11 +49,13 @@
                 </div>
                 <p class="truncate text-sm font-semibold">{{ $item->original_name }}</p>
                 <p class="mt-1 text-xs text-steel">{{ $item->folder }} · {{ number_format($item->size / 1024, 1) }} KB</p>
-                <form method="POST" action="{{ route('admin.media.destroy', $item) }}" class="mt-3" onsubmit="return confirm('Delete this file?')">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="text-xs font-semibold text-red-700 hover:underline">Delete</button>
-                </form>
+                <x-admin.delete-form
+                    :action="route('admin.media.destroy', $item)"
+                    label="Delete"
+                    title="Delete this file?"
+                    text="The file will be removed from the media library."
+                    class="mt-3"
+                />
             </div>
         @empty
             <div class="col-span-full border border-dashed border-line bg-white p-8 text-sm text-steel">

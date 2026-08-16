@@ -15,6 +15,7 @@ class PageController extends Controller
         $categories = ProductCategory::query()
             ->active()
             ->roots()
+            ->with('image')
             ->withCount(['products' => fn ($q) => $q->published()])
             ->orderBy('sort_order')
             ->get();

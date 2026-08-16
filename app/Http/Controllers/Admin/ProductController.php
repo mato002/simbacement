@@ -64,6 +64,7 @@ class ProductController extends Controller
             $product = Product::query()->create($data);
             $this->syncSpecifications($product, $request->input('specs', []));
             $this->syncPrimaryImage($product, $request, $mediaLibrary);
+            $this->syncGalleryImages($product, $request, $mediaLibrary);
 
             return $product;
         });
@@ -101,6 +102,8 @@ class ProductController extends Controller
             $product->update($data);
             $this->syncSpecifications($product, $request->input('specs', []));
             $this->syncPrimaryImage($product, $request, $mediaLibrary);
+            $this->syncGalleryImages($product, $request, $mediaLibrary);
+            $this->removeGalleryImages($product, $request, $mediaLibrary);
         });
 
         return redirect()
@@ -141,6 +144,10 @@ class ProductController extends Controller
             'meta_description' => ['nullable', 'string', 'max:300'],
             'meta_keywords' => ['nullable', 'string', 'max:255'],
             'primary_image' => ['nullable', 'image', 'max:5120'],
+            'gallery_images' => ['nullable', 'array'],
+            'gallery_images.*' => ['image', 'max:5120'],
+            'remove_images' => ['nullable', 'array'],
+            'remove_images.*' => ['integer'],
             'specs' => ['nullable', 'array'],
             'specs.*.label' => ['nullable', 'string', 'max:120'],
             'specs.*.value' => ['nullable', 'string', 'max:255'],
@@ -155,7 +162,7 @@ class ProductController extends Controller
             ? ($product?->published_at ?? now())
             : null;
 
-        unset($data['primary_image'], $data['specs']);
+        unset($data['primary_image'], $data['gallery_images'], $data['remove_images'], $data['specs']);
 
         return $data;
     }
@@ -207,5 +214,48 @@ class ProductController extends Controller
         ]);
 
         $product->update(['og_image_id' => $media->id]);
+    }
+
+    private function syncGalleryImages(Product $product, Request $request, MediaLibraryService $mediaLibrary): void
+    {
+        if (! $request->hasFile('gallery_images')) {
+            return;
+        }
+
+        $sort = (int) $product->images()->max('sort_order');
+
+        foreach ($request->file('gallery_images', []) as $file) {
+            $media = $mediaLibrary->store($file, $request->user(), 'products', $product->name);
+
+            ProductImage::query()->create([
+                'product_id' => $product->id,
+                'media_id' => $media->id,
+                'is_primary' => false,
+                'sort_order' => ++$sort,
+            ]);
+        }
+    }
+
+    private function removeGalleryImages(Product $product, Request $request, MediaLibraryService $mediaLibrary): void
+    {
+        $ids = collect($request->input('remove_images', []))->map(fn ($id) => (int) $id)->filter()->all();
+
+        if ($ids === []) {
+            return;
+        }
+
+        $images = $product->images()->with('media')->whereIn('id', $ids)->get();
+
+        foreach ($images as $image) {
+            if ($image->is_primary) {
+                continue;
+            }
+
+            if ($image->media) {
+                $mediaLibrary->delete($image->media);
+            }
+
+            $image->delete();
+        }
     }
 }

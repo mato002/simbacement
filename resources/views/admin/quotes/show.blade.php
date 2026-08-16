@@ -96,6 +96,15 @@
                 <p>Reviewed: {{ $quote->reviewed_at?->format('d M Y H:i') ?: '—' }}</p>
                 <p>Quoted: {{ $quote->quoted_at?->format('d M Y H:i') ?: '—' }}</p>
             </div>
+
+            <div class="mt-6 border-t border-line pt-4">
+                <x-admin.delete-form
+                    :action="route('admin.quotes.destroy', $quote)"
+                    label="Delete quotation"
+                    title="Delete this quotation?"
+                    text="{{ $quote->reference }} will be permanently removed."
+                />
+            </div>
         </div>
     </div>
 @endsection

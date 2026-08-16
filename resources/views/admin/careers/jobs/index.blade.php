@@ -29,7 +29,15 @@
                         <td class="px-4 py-3">{{ $job->location ?: '—' }}</td>
                         <td class="px-4 py-3">{{ $job->applications_count }}</td>
                         <td class="px-4 py-3">{{ $job->published_at && $job->is_active ? 'Open' : 'Closed/Draft' }}</td>
-                        <td class="px-4 py-3 text-right"><a href="{{ route('admin.jobs.edit', $job) }}" class="font-semibold text-brand-deep hover:underline">Edit</a></td>
+                        <td class="px-4 py-3 text-right">
+                            <div class="flex items-center justify-end gap-3">
+                                <a href="{{ route('admin.jobs.edit', $job) }}" class="font-semibold text-brand-deep hover:underline">Edit</a>
+                                <x-admin.delete-form
+                                    :action="route('admin.jobs.destroy', $job)"
+                                    title="Delete this job listing?"
+                                />
+                            </div>
+                        </td>
                     </tr>
                 @endforeach
             </tbody>

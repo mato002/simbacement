@@ -45,7 +45,14 @@
                         <td class="px-4 py-3">{{ $quote->status->label() }}</td>
                         <td class="px-4 py-3 text-steel">{{ $quote->created_at?->format('d M Y H:i') }}</td>
                         <td class="px-4 py-3 text-right">
-                            <a href="{{ route('admin.quotes.show', $quote) }}" class="font-semibold text-brand-deep hover:underline">Open</a>
+                            <div class="flex items-center justify-end gap-3">
+                                <a href="{{ route('admin.quotes.show', $quote) }}" class="font-semibold text-brand-deep hover:underline">Open</a>
+                                <x-admin.delete-form
+                                    :action="route('admin.quotes.destroy', $quote)"
+                                    title="Delete this quotation?"
+                                    text="{{ $quote->reference }} will be permanently removed."
+                                />
+                            </div>
                         </td>
                     </tr>
                 @empty

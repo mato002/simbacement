@@ -6,6 +6,7 @@ use App\Enums\ProjectCategory;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Project;
+use App\Models\ProjectImage;
 use App\Services\MediaLibraryService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -52,6 +53,7 @@ class ProjectController extends Controller
         $project = Project::query()->create($data);
         $project->products()->sync($request->input('products', []));
         $this->syncFeaturedImage($project, $request, $mediaLibrary);
+        $this->syncGalleryImages($project, $request, $mediaLibrary);
 
         return redirect()
             ->route('admin.projects.edit', $project)
@@ -60,7 +62,7 @@ class ProjectController extends Controller
 
     public function edit(Project $project): View
     {
-        $project->load('featuredImage');
+        $project->load(['featuredImage', 'images.media']);
 
         return view('admin.projects.form', [
             'project' => $project,
@@ -75,6 +77,8 @@ class ProjectController extends Controller
         $project->update($this->validated($request, $project));
         $project->products()->sync($request->input('products', []));
         $this->syncFeaturedImage($project, $request, $mediaLibrary);
+        $this->syncGalleryImages($project, $request, $mediaLibrary);
+        $this->removeGalleryImages($project, $request, $mediaLibrary);
 
         return redirect()
             ->route('admin.projects.edit', $project)
@@ -110,6 +114,10 @@ class ProjectController extends Controller
             'seo_title' => ['nullable', 'string', 'max:180'],
             'meta_description' => ['nullable', 'string', 'max:300'],
             'featured_image' => ['nullable', 'image', 'max:5120'],
+            'gallery_images' => ['nullable', 'array'],
+            'gallery_images.*' => ['image', 'max:5120'],
+            'remove_images' => ['nullable', 'array'],
+            'remove_images.*' => ['integer'],
             'products' => ['nullable', 'array'],
             'products.*' => ['integer', 'exists:products,id'],
         ]);
@@ -122,7 +130,7 @@ class ProjectController extends Controller
             ? ($project?->published_at ?? now())
             : null;
 
-        unset($data['featured_image'], $data['products']);
+        unset($data['featured_image'], $data['gallery_images'], $data['remove_images'], $data['products']);
 
         return $data;
     }
@@ -141,5 +149,43 @@ class ProjectController extends Controller
         );
 
         $project->update(['featured_image_id' => $media->id]);
+    }
+
+    private function syncGalleryImages(Project $project, Request $request, MediaLibraryService $mediaLibrary): void
+    {
+        if (! $request->hasFile('gallery_images')) {
+            return;
+        }
+
+        $sort = (int) $project->images()->max('sort_order');
+
+        foreach ($request->file('gallery_images', []) as $file) {
+            $media = $mediaLibrary->store($file, $request->user(), 'projects', $project->title);
+
+            ProjectImage::query()->create([
+                'project_id' => $project->id,
+                'media_id' => $media->id,
+                'sort_order' => ++$sort,
+            ]);
+        }
+    }
+
+    private function removeGalleryImages(Project $project, Request $request, MediaLibraryService $mediaLibrary): void
+    {
+        $ids = collect($request->input('remove_images', []))->map(fn ($id) => (int) $id)->filter()->all();
+
+        if ($ids === []) {
+            return;
+        }
+
+        $images = $project->images()->with('media')->whereIn('id', $ids)->get();
+
+        foreach ($images as $image) {
+            if ($image->media) {
+                $mediaLibrary->delete($image->media);
+            }
+
+            $image->delete();
+        }
     }
 }

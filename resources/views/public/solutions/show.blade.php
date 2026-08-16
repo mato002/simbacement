@@ -15,7 +15,7 @@
             <div class="grid gap-10 lg:grid-cols-2">
                 <div>
                     <p class="section-label mb-3">Solution</p>
-                    <h1 class="heading-display text-ink !text-5xl">{{ $solution->name }}</h1>
+                    <h1 class="heading-display text-ink">{{ $solution->name }}</h1>
                     @if ($solution->headline)
                         <p class="mt-4 text-xl text-steel">{{ $solution->headline }}</p>
                     @endif
@@ -59,15 +59,15 @@
         <section class="border-t border-line bg-white py-14">
             <div class="container-page">
                 <h2 class="font-display text-3xl font-bold uppercase tracking-wide">Recommended products</h2>
-                <div class="mt-8 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+                <div class="mt-8 card-grid">
                     @foreach ($solution->products as $product)
-                        <a href="{{ route('products.show', $product) }}" class="border border-line transition hover:border-brand">
+                        <a href="{{ route('products.show', $product) }}" class="card-tile">
                             <div class="aspect-[4/3] overflow-hidden bg-concrete">
                                 <img src="{{ $product->imageUrl() }}" alt="{{ $product->imageAlt() }}" class="h-full w-full object-cover" loading="lazy">
                             </div>
-                            <div class="p-5">
-                                <p class="text-xs font-semibold tracking-wide text-brand-deep uppercase">{{ $product->category?->name }}</p>
-                                <h3 class="mt-2 font-display text-2xl font-bold uppercase tracking-wide">{{ $product->name }}</h3>
+                            <div class="card-tile-body">
+                                <p class="card-kicker">{{ $product->category?->name }}</p>
+                                <h3 class="card-title">{{ $product->name }}</h3>
                             </div>
                         </a>
                     @endforeach

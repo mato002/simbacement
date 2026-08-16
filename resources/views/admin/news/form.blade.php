@@ -57,9 +57,12 @@
     </form>
 
     @if ($article->exists)
-        <form method="POST" action="{{ route('admin.news.destroy', $article) }}" class="mt-6" onsubmit="return confirm('Delete article?')">
-            @csrf @method('DELETE')
-            <button class="text-sm font-semibold text-red-700 hover:underline">Delete article</button>
-        </form>
+        <div class="mt-6">
+            <x-admin.delete-form
+                :action="route('admin.news.destroy', $article)"
+                label="Delete article"
+                title="Delete this article?"
+            />
+        </div>
     @endif
 @endsection

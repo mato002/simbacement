@@ -50,5 +50,13 @@
             </div>
             <button class="btn-primary w-full">Update message</button>
         </form>
+
+        <div class="mt-4 border border-line bg-white p-6">
+            <x-admin.delete-form
+                :action="route('admin.messages.destroy', $message)"
+                label="Delete message"
+                title="Delete this message?"
+            />
+        </div>
     </div>
 @endsection

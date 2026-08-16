@@ -57,4 +57,15 @@ class ProductCategory extends Model
     {
         return $query->whereNull('parent_id');
     }
+
+    public function imageUrl(): string
+    {
+        return $this->image?->url()
+            ?? config('media.placeholder.url');
+    }
+
+    public function imageAlt(): string
+    {
+        return $this->image?->alt ?: $this->name;
+    }
 }

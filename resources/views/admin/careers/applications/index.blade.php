@@ -37,7 +37,16 @@
                         </td>
                         <td class="px-4 py-3">{{ $application->jobListing?->title ?: $application->position }}</td>
                         <td class="px-4 py-3">{{ $application->status->label() }}</td>
-                        <td class="px-4 py-3 text-right"><a href="{{ route('admin.applications.show', $application) }}" class="font-semibold text-brand-deep hover:underline">Open</a></td>
+                        <td class="px-4 py-3 text-right">
+                            <div class="flex items-center justify-end gap-3">
+                                <a href="{{ route('admin.applications.show', $application) }}" class="font-semibold text-brand-deep hover:underline">Open</a>
+                                <x-admin.delete-form
+                                    :action="route('admin.applications.destroy', $application)"
+                                    title="Delete this application?"
+                                    text="The CV file will also be removed."
+                                />
+                            </div>
+                        </td>
                     </tr>
                 @empty
                     <tr><td colspan="4" class="px-4 py-8 text-steel">No applications yet.</td></tr>

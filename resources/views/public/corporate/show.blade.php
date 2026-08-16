@@ -13,7 +13,7 @@
             @if ($page->eyebrow)
                 <p class="section-label mb-3 text-brand">{{ $page->eyebrow }}</p>
             @endif
-            <h1 class="heading-display max-w-4xl !text-5xl">{{ $page->headline ?: $page->title }}</h1>
+            <h1 class="heading-display max-w-4xl">{{ $page->headline ?: $page->title }}</h1>
             @if ($page->summary)
                 <p class="mt-5 max-w-2xl text-lg text-white/75">{{ $page->summary }}</p>
             @endif
@@ -43,7 +43,7 @@
                         @if (! empty($section['body']))
                             <p class="mt-3 max-w-3xl text-steel">{{ $section['body'] }}</p>
                         @endif
-                        <div class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                        <div class="mt-6 grid grid-cols-2 gap-3 xl:grid-cols-3">
                             @foreach ($section['items'] ?? [] as $item)
                                 <div class="border border-line bg-white p-5">
                                     <div class="flex items-start gap-3">
@@ -63,7 +63,7 @@
                         @if (! empty($section['body']))
                             <p class="mt-3 max-w-3xl text-steel">{{ $section['body'] }}</p>
                         @endif
-                        <ol class="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                        <ol class="mt-8 grid grid-cols-2 gap-3 xl:grid-cols-4">
                             @foreach ($section['items'] ?? [] as $index => $item)
                                 <li class="border border-line bg-white p-5">
                                     <p class="font-display text-3xl font-bold text-brand">{{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}</p>
@@ -117,7 +117,7 @@
             @if ($page->slug === 'about' && $locations->isNotEmpty())
                 <div>
                     <h2 class="font-display text-3xl font-bold uppercase tracking-wide">Our Presence</h2>
-                    <div class="mt-6 grid gap-4 md:grid-cols-3">
+                    <div class="mt-6 grid grid-cols-2 gap-3 md:grid-cols-3">
                         @foreach ($locations as $location)
                             <div class="border border-line bg-white p-5">
                                 <p class="text-xs font-semibold tracking-wide text-brand-deep uppercase">{{ $location->type->label() }}</p>

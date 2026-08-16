@@ -40,7 +40,15 @@
                         <td class="px-4 py-3">{{ $message->subject }}</td>
                         <td class="px-4 py-3">{{ ucfirst($message->department) }}</td>
                         <td class="px-4 py-3">{{ $message->status->label() }}</td>
-                        <td class="px-4 py-3 text-right"><a href="{{ route('admin.messages.show', $message) }}" class="font-semibold text-brand-deep hover:underline">Open</a></td>
+                        <td class="px-4 py-3 text-right">
+                            <div class="flex items-center justify-end gap-3">
+                                <a href="{{ route('admin.messages.show', $message) }}" class="font-semibold text-brand-deep hover:underline">Open</a>
+                                <x-admin.delete-form
+                                    :action="route('admin.messages.destroy', $message)"
+                                    title="Delete this message?"
+                                />
+                            </div>
+                        </td>
                     </tr>
                 @empty
                     <tr><td colspan="5" class="px-4 py-8 text-steel">No messages yet.</td></tr>

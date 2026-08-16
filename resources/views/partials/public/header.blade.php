@@ -16,6 +16,7 @@
 <header
     x-data="{ open: false, scrolled: false }"
     x-init="window.addEventListener('scroll', () => scrolled = window.scrollY > 12)"
+    x-effect="document.body.classList.toggle('overflow-hidden', open)"
     class="sticky top-0 z-50 border-b border-line/70 transition duration-300"
     :class="scrolled ? 'bg-white/95 backdrop-blur shadow-sm' : 'bg-mist/95 backdrop-blur'"
 >
@@ -41,9 +42,9 @@
             </nav>
 
             <div class="flex items-center gap-3">
-                <a href="{{ route('quote.create') }}" class="btn-primary !py-2.5 !text-xs">
+                <a href="{{ route('quote.create') }}" class="btn-primary !px-3 !py-2.5 !text-xs">
                     <i class="fa-solid fa-file-invoice" aria-hidden="true"></i>
-                    Get a Quote
+                    <span class="hidden sm:inline">Get a Quote</span>
                 </a>
 
                 <button

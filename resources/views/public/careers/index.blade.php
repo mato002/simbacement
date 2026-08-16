@@ -7,22 +7,22 @@
     <section class="border-b border-line bg-white">
         <div class="container-page py-14">
             <p class="section-label mb-3">People</p>
-            <h1 class="heading-display text-ink !text-5xl">Build Your Career With Us</h1>
-            <p class="mt-4 max-w-2xl text-lg text-steel">Join a manufacturing team focused on quality, safety and building Kenya’s future.</p>
+            <h1 class="heading-display text-ink">Build Your Career With Us</h1>
+            <p class="mt-4 max-w-2xl text-base text-steel sm:text-lg">Join a manufacturing team focused on quality, safety and building Kenya’s future.</p>
         </div>
     </section>
 
     <section class="py-12">
         <div class="container-page">
-            <div class="mb-10 grid gap-4 md:grid-cols-3">
+            <div class="mb-10 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
                 @foreach ([
                     ['title' => 'Why Work With Us', 'text' => 'Meaningful work in manufacturing, quality and national supply.'],
                     ['title' => 'Internships', 'text' => 'Hands-on exposure for students and early-career talent.'],
                     ['title' => 'Graduate Opportunities', 'text' => 'Structured pathways into operations, engineering and commercial roles.'],
                 ] as $item)
-                    <div class="border border-line bg-white p-5">
-                        <h2 class="font-display text-2xl font-bold uppercase tracking-wide">{{ $item['title'] }}</h2>
-                        <p class="mt-2 text-sm text-steel">{{ $item['text'] }}</p>
+                    <div class="border border-line bg-white p-3 sm:p-5 {{ $loop->last ? 'col-span-2 md:col-span-1' : '' }}">
+                        <h2 class="font-display text-base font-bold uppercase tracking-wide sm:text-2xl">{{ $item['title'] }}</h2>
+                        <p class="mt-2 text-xs text-steel sm:text-sm">{{ $item['text'] }}</p>
                     </div>
                 @endforeach
             </div>

@@ -126,6 +126,28 @@
                 </div>
 
                 <div class="border border-line bg-white p-6">
+                    <h2 class="font-display text-2xl font-bold uppercase tracking-wide">Gallery</h2>
+                    <p class="mt-2 text-xs text-steel">Add extra product photos shown on the product page.</p>
+                    @if ($product->exists && $product->images->where('is_primary', false)->isNotEmpty())
+                        <div class="mt-4 grid grid-cols-2 gap-3">
+                            @foreach ($product->images->where('is_primary', false) as $image)
+                                <label class="relative block overflow-hidden border border-line bg-mist">
+                                    @if ($image->media)
+                                        <img src="{{ $image->media->url() }}" alt="" class="aspect-square w-full object-cover">
+                                    @endif
+                                    <span class="absolute inset-x-0 bottom-0 bg-ink/80 px-2 py-1 text-[11px] font-semibold text-white">
+                                        <input type="checkbox" name="remove_images[]" value="{{ $image->id }}" class="mr-1">
+                                        Remove
+                                    </span>
+                                </label>
+                            @endforeach
+                        </div>
+                    @endif
+                    <input type="file" name="gallery_images[]" accept="image/*" multiple class="mt-4 w-full border border-line bg-mist px-3 py-2 text-sm">
+                    @error('gallery_images.*') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="border border-line bg-white p-6">
                     <h2 class="font-display text-2xl font-bold uppercase tracking-wide">SEO</h2>
                     <div class="mt-4 space-y-4">
                         <div>
@@ -152,10 +174,13 @@
     </form>
 
     @if ($product->exists)
-        <form method="POST" action="{{ route('admin.products.destroy', $product) }}" class="mt-6" onsubmit="return confirm('Delete this product?')">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="text-sm font-semibold text-red-700 hover:underline">Delete product</button>
-        </form>
+        <div class="mt-6">
+            <x-admin.delete-form
+                :action="route('admin.products.destroy', $product)"
+                label="Delete product"
+                title="Delete this product?"
+                text="This removes the product from the catalogue."
+            />
+        </div>
     @endif
 @endsection

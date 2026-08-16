@@ -12,7 +12,7 @@
     @endphp
 
     {{-- Hero --}}
-    <section class="relative isolate min-h-[78vh] overflow-hidden bg-ink text-white">
+    <section class="relative isolate min-h-[68vh] overflow-hidden bg-ink text-white sm:min-h-[78vh]">
         <div class="absolute inset-0">
             <img
                 src="{{ $hero['url'] }}"
@@ -26,7 +26,7 @@
             <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(230,180,34,0.22),transparent_42%)]"></div>
         </div>
 
-        <div class="container-page relative flex min-h-[78vh] flex-col justify-center py-20">
+        <div class="container-page relative flex min-h-[68vh] flex-col justify-center py-14 sm:min-h-[78vh] sm:py-20">
             <p class="section-label mb-5 text-brand">Simba Cement</p>
             <h1 class="heading-display max-w-4xl">
                 Building Kenya.<br>
@@ -76,7 +76,7 @@
     </section>
 
     {{-- Categories --}}
-    <section class="py-20">
+    <section class="py-12 sm:py-20">
         <div class="container-page">
             <div class="mb-10 max-w-2xl">
                 <p class="section-label mb-3">Product Categories</p>
@@ -97,33 +97,35 @@
                 ];
             @endphp
 
-            <div class="grid gap-6 md:grid-cols-3">
+            <div class="card-grid">
                 @foreach ($categories as $category)
                     @php
                         $imageKey = $categoryImageKeys[$category->slug] ?? null;
-                        $image = $imageKey && isset($categoriesMedia[$imageKey])
+                        $fallback = $imageKey && isset($categoriesMedia[$imageKey])
                             ? $categoriesMedia[$imageKey]
                             : config('media.placeholder');
+                        $imageUrl = $category->image?->url() ?: $fallback['url'];
+                        $imageAlt = $category->image?->alt ?: ($fallback['alt'] ?? $category->name);
                     @endphp
-                    <a href="{{ route('products.index', ['category' => $category->slug]) }}" class="group overflow-hidden border border-line bg-white transition hover:border-brand hover:shadow-sm">
+                    <a href="{{ route('products.index', ['category' => $category->slug]) }}" class="card-tile group">
                         <div class="relative aspect-[16/10] overflow-hidden bg-concrete">
                             <img
-                                src="{{ $image['url'] }}"
-                                alt="{{ $image['alt'] }}"
+                                src="{{ $imageUrl }}"
+                                alt="{{ $imageAlt }}"
                                 class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                                 loading="lazy"
                                 width="1200"
                                 height="750"
                             >
                             <div class="absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent"></div>
-                            <span class="absolute bottom-4 left-4 inline-flex h-10 w-10 items-center justify-center bg-brand text-ink">
+                            <span class="absolute bottom-3 left-3 inline-flex h-8 w-8 items-center justify-center bg-brand text-ink sm:bottom-4 sm:left-4 sm:h-10 sm:w-10">
                                 <i class="{{ $categoryIcons[$category->slug] ?? 'fa-solid fa-cube' }}" aria-hidden="true"></i>
                             </span>
                         </div>
-                        <div class="p-7">
-                            <h3 class="font-display text-3xl font-bold uppercase tracking-wide">{{ $category->name }}</h3>
-                            <p class="mt-3 text-sm leading-relaxed text-steel">{{ $category->description }}</p>
-                            <span class="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-brand-deep group-hover:underline">
+                        <div class="card-tile-body">
+                            <h3 class="card-title sm:text-3xl">{{ $category->name }}</h3>
+                            <p class="mt-2 hidden text-sm leading-relaxed text-steel sm:mt-3 sm:block">{{ $category->description }}</p>
+                            <span class="mt-3 inline-flex items-center gap-2 text-xs font-semibold text-brand-deep group-hover:underline sm:mt-6 sm:text-sm">
                                 View {{ $category->products_count }} products
                                 <i class="fa-solid fa-arrow-right text-xs" aria-hidden="true"></i>
                             </span>
@@ -135,7 +137,7 @@
     </section>
 
     @if ($featuredProducts->isNotEmpty())
-        <section class="border-y border-line bg-white py-20">
+        <section class="border-y border-line bg-white py-12 sm:py-20">
             <div class="container-page">
                 <div class="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                     <div class="max-w-2xl">
@@ -144,16 +146,16 @@
                     </div>
                     <a href="{{ route('products.index') }}" class="btn-dark">View all products</a>
                 </div>
-                <div class="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+                <div class="card-grid-4">
                     @foreach ($featuredProducts as $product)
-                        <a href="{{ route('products.show', $product) }}" class="group border border-line transition hover:border-brand">
+                        <a href="{{ route('products.show', $product) }}" class="card-tile group">
                             <div class="aspect-[4/3] overflow-hidden bg-concrete">
                                 <img src="{{ $product->imageUrl() }}" alt="{{ $product->imageAlt() }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy">
                             </div>
-                            <div class="p-5">
-                                <p class="text-xs font-semibold tracking-wide text-brand-deep uppercase">{{ $product->category?->name }}</p>
-                                <h3 class="mt-2 font-display text-2xl font-bold uppercase tracking-wide">{{ $product->name }}</h3>
-                                <p class="mt-2 line-clamp-2 text-sm text-steel">{{ $product->short_description }}</p>
+                            <div class="card-tile-body">
+                                <p class="card-kicker">{{ $product->category?->name }}</p>
+                                <h3 class="card-title">{{ $product->name }}</h3>
+                                <p class="mt-2 hidden line-clamp-2 text-sm text-steel sm:block">{{ $product->short_description }}</p>
                             </div>
                         </a>
                     @endforeach
@@ -163,7 +165,7 @@
     @endif
 
     {{-- Solutions strip --}}
-    <section class="relative isolate overflow-hidden bg-ink py-20 text-white">
+    <section class="relative isolate overflow-hidden bg-ink py-12 text-white sm:py-20">
         <div class="absolute inset-0">
             <img
                 src="{{ $solutionsMedia['url'] }}"
@@ -192,7 +194,7 @@
                     'hardware-distributors' => 'fa-solid fa-store',
                 ];
             @endphp
-            <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
                 @foreach ($solutions as $solution)
                     <a href="{{ route('solutions.show', $solution) }}" class="flex items-center gap-3 border border-white/15 px-4 py-4 text-sm font-semibold transition hover:border-brand hover:bg-white/5">
                         <i class="{{ $solutionIcons[$solution->slug] ?? 'fa-solid fa-cube' }} text-brand" aria-hidden="true"></i>
@@ -204,7 +206,7 @@
     </section>
 
     @if ($featuredProjects->isNotEmpty())
-        <section class="py-20">
+        <section class="py-12 sm:py-20">
             <div class="container-page">
                 <div class="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                     <div class="max-w-2xl">
@@ -213,16 +215,16 @@
                     </div>
                     <a href="{{ route('projects.index') }}" class="btn-dark">View all projects</a>
                 </div>
-                <div class="grid gap-6 md:grid-cols-3">
+                <div class="card-grid">
                     @foreach ($featuredProjects as $project)
-                        <a href="{{ route('projects.show', $project) }}" class="group border border-line bg-white transition hover:border-brand">
+                        <a href="{{ route('projects.show', $project) }}" class="card-tile group">
                             <div class="aspect-[16/10] overflow-hidden bg-concrete">
                                 <img src="{{ $project->imageUrl() }}" alt="{{ $project->imageAlt() }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy">
                             </div>
-                            <div class="p-5">
-                                <p class="text-xs font-semibold tracking-wide text-brand-deep uppercase">{{ $project->category->label() }}</p>
-                                <h3 class="mt-2 font-display text-2xl font-bold uppercase tracking-wide">{{ $project->title }}</h3>
-                                <p class="mt-2 text-sm text-steel">{{ $project->location }}@if($project->year) · {{ $project->year }}@endif</p>
+                            <div class="card-tile-body">
+                                <p class="card-kicker">{{ $project->category->label() }}</p>
+                                <h3 class="card-title">{{ $project->title }}</h3>
+                                <p class="mt-1 text-[11px] text-steel sm:mt-2 sm:text-sm">{{ $project->location }}@if($project->year) · {{ $project->year }}@endif</p>
                             </div>
                         </a>
                     @endforeach
@@ -232,7 +234,7 @@
     @endif
 
     {{-- CTA --}}
-    <section class="py-20">
+    <section class="py-12 sm:py-20">
         <div class="container-page">
             <div class="relative overflow-hidden border border-line bg-white">
                 <div class="grid lg:grid-cols-2">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Solution;
+use App\Services\MediaLibraryService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -16,6 +17,7 @@ class SolutionController extends Controller
     public function index(): View
     {
         $solutions = Solution::query()
+            ->with('image')
             ->withCount('products')
             ->orderBy('sort_order')
             ->orderBy('name')
@@ -34,11 +36,12 @@ class SolutionController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, MediaLibraryService $mediaLibrary): RedirectResponse
     {
         $data = $this->validated($request);
         $solution = Solution::query()->create($data);
         $solution->products()->sync($this->productSyncPayload($request));
+        $this->syncImage($solution, $request, $mediaLibrary);
 
         return redirect()
             ->route('admin.solutions.edit', $solution)
@@ -47,6 +50,7 @@ class SolutionController extends Controller
 
     public function edit(Solution $solution): View
     {
+        $solution->load('image');
         $highlights = old('highlights', $solution->highlights ?: []);
 
         return view('admin.solutions.form', [
@@ -57,10 +61,11 @@ class SolutionController extends Controller
         ]);
     }
 
-    public function update(Request $request, Solution $solution): RedirectResponse
+    public function update(Request $request, Solution $solution, MediaLibraryService $mediaLibrary): RedirectResponse
     {
         $solution->update($this->validated($request, $solution));
         $solution->products()->sync($this->productSyncPayload($request));
+        $this->syncImage($solution, $request, $mediaLibrary);
 
         return redirect()
             ->route('admin.solutions.edit', $solution)
@@ -92,6 +97,7 @@ class SolutionController extends Controller
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'seo_title' => ['nullable', 'string', 'max:180'],
             'meta_description' => ['nullable', 'string', 'max:300'],
+            'image' => ['nullable', 'image', 'max:5120'],
             'products' => ['nullable', 'array'],
             'products.*' => ['integer', 'exists:products,id'],
         ]);
@@ -105,7 +111,7 @@ class SolutionController extends Controller
             ->values()
             ->all();
 
-        unset($data['products']);
+        unset($data['products'], $data['image']);
 
         return $data;
     }
@@ -121,5 +127,21 @@ class SolutionController extends Controller
         }
 
         return $payload;
+    }
+
+    private function syncImage(Solution $solution, Request $request, MediaLibraryService $mediaLibrary): void
+    {
+        if (! $request->hasFile('image')) {
+            return;
+        }
+
+        $media = $mediaLibrary->store(
+            $request->file('image'),
+            $request->user(),
+            'solutions',
+            $solution->name
+        );
+
+        $solution->update(['image_id' => $media->id]);
     }
 }

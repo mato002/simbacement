@@ -38,7 +38,7 @@
 
                 <div>
                     <p class="section-label mb-3">{{ $product->category?->name }}</p>
-                    <h1 class="heading-display text-ink !text-5xl">{{ $product->name }}</h1>
+                    <h1 class="heading-display text-ink">{{ $product->name }}</h1>
                     @if ($product->tagline)
                         <p class="mt-4 text-xl text-steel">{{ $product->tagline }}</p>
                     @endif
@@ -58,7 +58,7 @@
                     </div>
 
                     @if ($product->specifications->isNotEmpty())
-                        <dl class="mt-8 grid gap-3 border border-line bg-mist p-5 sm:grid-cols-2">
+                        <dl class="mt-8 grid grid-cols-2 gap-3 border border-line bg-mist p-4 sm:p-5">
                             @foreach ($product->specifications->take(4) as $spec)
                                 <div>
                                     <dt class="text-xs tracking-wide text-steel uppercase">{{ $spec->label }}</dt>
@@ -136,15 +136,15 @@
         <section class="border-t border-line bg-white py-14">
             <div class="container-page">
                 <h2 class="font-display text-3xl font-bold uppercase tracking-wide">Related products</h2>
-                <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <div class="mt-8 card-grid">
                     @foreach ($related as $item)
-                        <a href="{{ route('products.show', $item) }}" class="border border-line transition hover:border-brand">
+                        <a href="{{ route('products.show', $item) }}" class="card-tile">
                             <div class="aspect-[4/3] overflow-hidden bg-concrete">
                                 <img src="{{ $item->imageUrl() }}" alt="{{ $item->imageAlt() }}" class="h-full w-full object-cover" loading="lazy">
                             </div>
-                            <div class="p-5">
-                                <p class="text-xs font-semibold tracking-wide text-brand-deep uppercase">{{ $item->category?->name }}</p>
-                                <h3 class="mt-2 font-display text-2xl font-bold uppercase tracking-wide">{{ $item->name }}</h3>
+                            <div class="card-tile-body">
+                                <p class="card-kicker">{{ $item->category?->name }}</p>
+                                <h3 class="card-title">{{ $item->name }}</h3>
                             </div>
                         </a>
                     @endforeach

@@ -30,7 +30,13 @@
                         <td class="px-4 py-3">{{ $location->county ?: '—' }}</td>
                         <td class="px-4 py-3">{{ $location->is_active ? 'Active' : 'Inactive' }}</td>
                         <td class="px-4 py-3 text-right">
-                            <a href="{{ route('admin.locations.edit', $location) }}" class="font-semibold text-brand-deep hover:underline">Edit</a>
+                            <div class="flex items-center justify-end gap-3">
+                                <a href="{{ route('admin.locations.edit', $location) }}" class="font-semibold text-brand-deep hover:underline">Edit</a>
+                                <x-admin.delete-form
+                                    :action="route('admin.locations.destroy', $location)"
+                                    title="Delete this location?"
+                                />
+                            </div>
                         </td>
                     </tr>
                 @empty

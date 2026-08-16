@@ -7,7 +7,7 @@
     <section class="border-b border-line bg-white">
         <div class="container-page py-14">
             <p class="section-label mb-3">Reach Us</p>
-            <h1 class="heading-display text-ink !text-5xl">Contact Us</h1>
+            <h1 class="heading-display text-ink">Contact Us</h1>
             <p class="mt-4 max-w-2xl text-lg text-steel">Talk to sales, support or our operations teams across Kenya.</p>
         </div>
     </section>

@@ -7,7 +7,7 @@
     <section class="border-b border-line bg-white">
         <div class="container-page py-14 sm:py-16">
             <p class="section-label mb-3">Sales</p>
-            <h1 class="heading-display text-ink !text-5xl">Request a Quote</h1>
+            <h1 class="heading-display text-ink">Request a Quote</h1>
             <p class="mt-4 max-w-2xl text-lg text-steel">
                 Tell us what you need. Our sales team will respond with a quotation reference.
             </p>

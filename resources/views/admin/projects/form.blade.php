@@ -85,6 +85,26 @@
                     <input type="file" name="featured_image" accept="image/*" class="mt-4 w-full border border-line bg-mist px-3 py-2 text-sm">
                 </div>
                 <div class="border border-line bg-white p-6">
+                    <h2 class="font-display text-2xl font-bold uppercase tracking-wide">Gallery</h2>
+                    <p class="mt-2 text-xs text-steel">Extra project photos for the public gallery.</p>
+                    @if ($project->exists && $project->images->isNotEmpty())
+                        <div class="mt-4 grid grid-cols-2 gap-3">
+                            @foreach ($project->images as $image)
+                                <label class="relative block overflow-hidden border border-line bg-mist">
+                                    @if ($image->media)
+                                        <img src="{{ $image->media->url() }}" alt="" class="aspect-square w-full object-cover">
+                                    @endif
+                                    <span class="absolute inset-x-0 bottom-0 bg-ink/80 px-2 py-1 text-[11px] font-semibold text-white">
+                                        <input type="checkbox" name="remove_images[]" value="{{ $image->id }}" class="mr-1">
+                                        Remove
+                                    </span>
+                                </label>
+                            @endforeach
+                        </div>
+                    @endif
+                    <input type="file" name="gallery_images[]" accept="image/*" multiple class="mt-4 w-full border border-line bg-mist px-3 py-2 text-sm">
+                </div>
+                <div class="border border-line bg-white p-6">
                     <h2 class="font-display text-2xl font-bold uppercase tracking-wide">Products used</h2>
                     <div class="mt-4 max-h-72 space-y-2 overflow-y-auto">
                         @foreach ($products as $product)
@@ -112,10 +132,12 @@
     </form>
 
     @if ($project->exists)
-        <form method="POST" action="{{ route('admin.projects.destroy', $project) }}" class="mt-6" onsubmit="return confirm('Delete this project?')">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="text-sm font-semibold text-red-700 hover:underline">Delete project</button>
-        </form>
+        <div class="mt-6">
+            <x-admin.delete-form
+                :action="route('admin.projects.destroy', $project)"
+                label="Delete project"
+                title="Delete this project?"
+            />
+        </div>
     @endif
 @endsection

@@ -27,7 +27,15 @@
                         <td class="px-4 py-3 font-semibold">{{ $article->title }}</td>
                         <td class="px-4 py-3">{{ $article->category->label() }}</td>
                         <td class="px-4 py-3">{{ $article->is_published ? 'Published' : 'Draft' }}</td>
-                        <td class="px-4 py-3 text-right"><a href="{{ route('admin.news.edit', $article) }}" class="font-semibold text-brand-deep hover:underline">Edit</a></td>
+                        <td class="px-4 py-3 text-right">
+                            <div class="flex items-center justify-end gap-3">
+                                <a href="{{ route('admin.news.edit', $article) }}" class="font-semibold text-brand-deep hover:underline">Edit</a>
+                                <x-admin.delete-form
+                                    :action="route('admin.news.destroy', $article)"
+                                    title="Delete this article?"
+                                />
+                            </div>
+                        </td>
                     </tr>
                 @empty
                     <tr><td colspan="4" class="px-4 py-8 text-steel">No articles yet.</td></tr>

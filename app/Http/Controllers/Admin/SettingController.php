@@ -18,6 +18,7 @@ class SettingController extends Controller
             'seo' => Setting::group('seo'),
             'stats' => Setting::group('stats'),
             'site' => Setting::group('site'),
+            'whatsapp' => Setting::group('whatsapp'),
         ]);
     }
 
@@ -35,6 +36,10 @@ class SettingController extends Controller
             'site' => ['nullable', 'array'],
             'site.positioning' => ['nullable', 'in:official_manufacturer,authorized_distributor'],
             'site.commerce_mode' => ['nullable', 'in:quotes_only,ecommerce'],
+            'whatsapp' => ['nullable', 'array'],
+            'whatsapp.phone' => ['nullable', 'string', 'max:40'],
+            'whatsapp.message' => ['nullable', 'string', 'max:500'],
+            'whatsapp.enabled' => ['nullable', 'boolean'],
         ]);
 
         foreach (['company', 'social', 'seo', 'stats', 'site'] as $group) {
@@ -42,6 +47,10 @@ class SettingController extends Controller
                 Setting::setValue($key, $value ?: null, $group);
             }
         }
+
+        Setting::setValue('enabled', $request->boolean('whatsapp.enabled'), 'whatsapp', 'boolean');
+        Setting::setValue('phone', filled($data['whatsapp']['phone'] ?? null) ? $data['whatsapp']['phone'] : null, 'whatsapp');
+        Setting::setValue('message', filled($data['whatsapp']['message'] ?? null) ? $data['whatsapp']['message'] : null, 'whatsapp');
 
         return back()->with('success', 'Settings updated successfully.');
     }

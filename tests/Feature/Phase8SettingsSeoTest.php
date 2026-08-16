@@ -58,11 +58,22 @@ class Phase8SettingsSeoTest extends TestCase
                     'positioning' => 'official_manufacturer',
                     'commerce_mode' => 'quotes_only',
                 ],
+                'whatsapp' => [
+                    'enabled' => '1',
+                    'phone' => '0712345678',
+                    'message' => 'Hello from the website',
+                ],
             ])
             ->assertRedirect();
 
         $this->assertSame('Simba Cement Ltd', Setting::getValue('legal_name', null, 'company'));
         $this->assertSame('25+', Setting::getValue('years_experience', null, 'stats'));
+        $this->assertTrue((bool) Setting::getValue('enabled', false, 'whatsapp'));
+        $this->assertSame('0712345678', Setting::getValue('phone', null, 'whatsapp'));
+        $this->assertSame(
+            'https://wa.me/254712345678?text='.rawurlencode('Hello from the website'),
+            Setting::whatsappChatUrl()
+        );
 
         $this->actingAs($admin)
             ->post(route('admin.locations.store'), [
@@ -158,5 +169,23 @@ class Phase8SettingsSeoTest extends TestCase
             ->assertOk()
             ->assertSee('Simba Cement Public')
             ->assertSee('hello@simba.test');
+    }
+
+    public function test_whatsapp_float_appears_when_enabled(): void
+    {
+        Setting::setValue('enabled', true, 'whatsapp', 'boolean');
+        Setting::setValue('phone', '254700111222', 'whatsapp');
+        Setting::setValue('message', null, 'whatsapp');
+
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertSee('https://wa.me/254700111222', false)
+            ->assertSee('Chat with us on WhatsApp');
+
+        Setting::setValue('enabled', false, 'whatsapp', 'boolean');
+
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertDontSee('Chat with us on WhatsApp');
     }
 }

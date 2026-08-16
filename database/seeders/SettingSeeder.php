@@ -32,6 +32,9 @@ class SettingSeeder extends Seeder
             ['group' => 'stats', 'key' => 'projects_served', 'value' => null, 'type' => 'string'],
             ['group' => 'site', 'key' => 'positioning', 'value' => 'official_manufacturer', 'type' => 'string'],
             ['group' => 'site', 'key' => 'commerce_mode', 'value' => 'quotes_only', 'type' => 'string'],
+            ['group' => 'whatsapp', 'key' => 'enabled', 'value' => '0', 'type' => 'boolean'],
+            ['group' => 'whatsapp', 'key' => 'phone', 'value' => null, 'type' => 'string'],
+            ['group' => 'whatsapp', 'key' => 'message', 'value' => 'Hello Simba Cement, I would like to enquire about your products.', 'type' => 'string'],
         ];
 
         foreach ($settings as $setting) {

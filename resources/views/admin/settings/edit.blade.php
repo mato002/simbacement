@@ -41,6 +41,41 @@
         </div>
 
         <div class="border border-line bg-white p-6">
+            <h2 class="font-display text-2xl font-bold uppercase tracking-wide">WhatsApp</h2>
+            <p class="mt-2 text-sm text-steel">
+                Controls the floating chat button on the public website. Use a Kenya number with country code (e.g. 2547XXXXXXXX) or 07XXXXXXXX — it is normalized automatically.
+            </p>
+            <div class="mt-4 space-y-4">
+                <label class="flex items-center gap-2 text-sm font-semibold">
+                    <input type="checkbox" name="whatsapp[enabled]" value="1" @checked(old('whatsapp.enabled', $whatsapp['enabled'] ?? false))>
+                    Show floating WhatsApp button
+                </label>
+                <div class="grid gap-4 md:grid-cols-2">
+                    <div>
+                        <label class="mb-1.5 block text-sm font-semibold">WhatsApp number</label>
+                        <input
+                            type="text"
+                            name="whatsapp[phone]"
+                            value="{{ old('whatsapp.phone', $whatsapp['phone'] ?? '') }}"
+                            class="w-full border border-line bg-mist px-3 py-2.5 text-sm"
+                            placeholder="2547XXXXXXXX or 07XXXXXXXX"
+                        >
+                    </div>
+                    <div>
+                        <label class="mb-1.5 block text-sm font-semibold">Default message (optional)</label>
+                        <input
+                            type="text"
+                            name="whatsapp[message]"
+                            value="{{ old('whatsapp.message', $whatsapp['message'] ?? '') }}"
+                            class="w-full border border-line bg-mist px-3 py-2.5 text-sm"
+                            placeholder="Pre-filled chat text"
+                        >
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="border border-line bg-white p-6">
             <h2 class="font-display text-2xl font-bold uppercase tracking-wide">Social</h2>
             <div class="mt-4 grid gap-4 md:grid-cols-2">
                 @foreach (['facebook', 'linkedin', 'instagram', 'x', 'youtube'] as $network)

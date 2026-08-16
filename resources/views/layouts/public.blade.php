@@ -37,6 +37,7 @@
     </main>
 
     @include('partials.public.footer')
+    @include('partials.public.whatsapp-float')
 
     @stack('scripts')
 </body>

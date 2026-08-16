@@ -36,11 +36,13 @@ class AppServiceProvider extends ServiceProvider
             return $user->hasRole('super-admin') ? true : null;
         });
 
-        View::composer(['layouts.public', 'partials.public.footer', 'public.home'], function ($view) {
+        View::composer(['layouts.public', 'partials.public.footer', 'partials.public.whatsapp-float', 'public.home'], function ($view) {
             $view->with('siteCompany', Setting::group('company'));
             $view->with('siteSocial', Setting::group('social'));
             $view->with('siteSeo', Setting::group('seo'));
             $view->with('siteStats', Setting::group('stats'));
+            $view->with('siteWhatsapp', Setting::group('whatsapp'));
+            $view->with('whatsappChatUrl', Setting::whatsappChatUrl());
         });
 
         View::composer(['layouts.admin', 'partials.admin.header'], function ($view) {

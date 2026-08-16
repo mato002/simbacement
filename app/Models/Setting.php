@@ -76,4 +76,30 @@ class Setting extends Model
                 ->all();
         });
     }
+
+    public static function whatsappChatUrl(): ?string
+    {
+        if (! static::getValue('enabled', false, 'whatsapp')) {
+            return null;
+        }
+
+        $digits = preg_replace('/\D+/', '', (string) static::getValue('phone', '', 'whatsapp')) ?: '';
+
+        if ($digits === '') {
+            return null;
+        }
+
+        if (str_starts_with($digits, '0')) {
+            $digits = '254'.substr($digits, 1);
+        }
+
+        $url = "https://wa.me/{$digits}";
+        $message = trim((string) static::getValue('message', '', 'whatsapp'));
+
+        if ($message !== '') {
+            $url .= '?text='.rawurlencode($message);
+        }
+
+        return $url;
+    }
 }

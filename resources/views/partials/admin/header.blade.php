@@ -221,62 +221,45 @@
             </div>
         </div>
 
-        <div class="flex shrink-0 items-center gap-1.5 sm:gap-2">
-            {{-- Quick create — always visible in the header --}}
-            <div class="flex items-center gap-1 sm:gap-1.5" role="group" aria-label="Quick create">
-                <a
-                    href="{{ route('admin.products.create') }}"
+        <div class="flex shrink-0 items-center gap-2">
+            <div class="relative">
+                <button
+                    type="button"
                     class="admin-header-btn !border-brand !bg-brand hover:!bg-brand-dark"
-                    title="New product"
+                    @click="createOpen = !createOpen; notificationsOpen = false; userMenuOpen = false; searchOpen = false"
+                    :aria-expanded="createOpen.toString()"
+                    aria-label="Quick create"
+                    title="Quick create"
                 >
-                    <i class="fa-solid fa-box-open" aria-hidden="true"></i>
-                    <span class="hidden 2xl:inline">Product</span>
-                </a>
-                <a
-                    href="{{ route('admin.news.create') }}"
-                    class="admin-header-btn"
-                    title="New article"
-                >
-                    <i class="fa-solid fa-newspaper" aria-hidden="true"></i>
-                    <span class="hidden 2xl:inline">Article</span>
-                </a>
-                <a
-                    href="{{ route('admin.jobs.create') }}"
-                    class="admin-header-btn"
-                    title="New job listing"
-                >
-                    <i class="fa-solid fa-briefcase" aria-hidden="true"></i>
-                    <span class="hidden 2xl:inline">Job</span>
-                </a>
-                <a
-                    href="{{ route('admin.projects.create') }}"
-                    class="admin-header-btn"
-                    title="New project"
-                >
-                    <i class="fa-solid fa-building" aria-hidden="true"></i>
-                    <span class="hidden 2xl:inline">Project</span>
-                </a>
+                    <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                    <span class="hidden sm:inline">Create</span>
+                </button>
 
-                <div class="relative">
-                    <button
-                        type="button"
-                        class="admin-header-icon-btn"
-                        @click="createOpen = !createOpen; notificationsOpen = false; userMenuOpen = false; searchOpen = false"
-                        :aria-expanded="createOpen.toString()"
-                        aria-label="More create options"
-                        title="More"
-                    >
-                        <i class="fa-solid fa-ellipsis" aria-hidden="true"></i>
-                    </button>
-
-                    <div
-                        x-cloak
-                        x-show="createOpen"
-                        x-transition.origin.top.right
-                        @click.outside="createOpen = false"
-                        class="admin-header-menu right-0 w-56"
-                    >
-                        <p class="admin-header-menu-label">More</p>
+                <div
+                    x-cloak
+                    x-show="createOpen"
+                    x-transition.origin.top.right
+                    @click.outside="createOpen = false"
+                    class="admin-header-menu right-0 w-64"
+                >
+                    <p class="admin-header-menu-label">Quick create</p>
+                    <a href="{{ route('admin.products.create') }}" class="admin-header-menu-item" @click="createOpen = false">
+                        <i class="fa-solid fa-box-open w-4 text-center text-brand-deep" aria-hidden="true"></i>
+                        New product
+                    </a>
+                    <a href="{{ route('admin.news.create') }}" class="admin-header-menu-item" @click="createOpen = false">
+                        <i class="fa-solid fa-newspaper w-4 text-center text-brand-deep" aria-hidden="true"></i>
+                        New article
+                    </a>
+                    <a href="{{ route('admin.jobs.create') }}" class="admin-header-menu-item" @click="createOpen = false">
+                        <i class="fa-solid fa-briefcase w-4 text-center text-brand-deep" aria-hidden="true"></i>
+                        New job listing
+                    </a>
+                    <a href="{{ route('admin.projects.create') }}" class="admin-header-menu-item" @click="createOpen = false">
+                        <i class="fa-solid fa-building w-4 text-center text-brand-deep" aria-hidden="true"></i>
+                        New project
+                    </a>
+                    <div class="border-t border-line py-1">
                         <a href="{{ route('admin.solutions.create') }}" class="admin-header-menu-item" @click="createOpen = false">
                             <i class="fa-solid fa-diagram-project w-4 text-center text-steel" aria-hidden="true"></i>
                             New solution
